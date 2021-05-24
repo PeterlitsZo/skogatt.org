@@ -16,3 +16,11 @@ stop:
 	@echo "\n[MAKE] Try to remove running server 'peterlitszo/peterlitszo'...\n"
 	@docker rm -f peterlits-com
 	@echo ""
+
+save:
+	@echo "\n[MAKE] Before save image, make sure that you have run 'make'..."
+	@echo "[MAME] Save to peterlits.tar...\n"
+	@docker save -o peterlits.tar peterlitszo/peterlits.com
+	@echo "\n[MAKE] OK. If want to push file to server, use command:"
+	@echo "[MAKE]    'scp peterlits.tar <name>@<IP/domain>:<path>'"
+	@echo "[MAKE] Use 'docker load --input <path>/peterlits.tar' to load image\n"
