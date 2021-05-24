@@ -12,8 +12,9 @@ function App() {
         </div>
       </header>
       <div className="content">
-        <p>这里是 Peterlits 的小网站。</p>
-        <p>Peterlits 其人，本名周泓余，于苏州大学计算机科学与技术系在读。</p>
+        <p>Peterlits 其人，本名周泓余，现于苏州大学计算机科学与技术系在读。</p>
+        <p>这里是 Peterlits 的小网站，它基于 nignx 反向代理，其中静态页面基于 React 框架，动态服务基于 Rust，封装在 docker 容器中运行。</p>
+        <p>如果喜欢的话，可以在下面点赞哦，如果不喜欢的话也可以点踩哦，欢迎留言～</p>
       </div>
     </div>
   );

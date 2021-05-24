@@ -5,10 +5,10 @@ $text-second-color: #aaaaaa;
 $home-head-title-font-height: 18vmin;
 $text-font-height: 16px;
 $little-title-font-height: 20px;
-$text-margin: 0.2em 0;
+$text-margin: 0.4em 0;
 
 $page-padding: 16px;
-$content-padding: 16px;
+$content-padding: 32px;
 
 $line-height: 1px;
 
@@ -80,7 +80,6 @@ html {
     }
 
     .content {
-        min-height: calc(100vh - #{2 * $home-head-title-font-height} - #{2 * $content-padding});
         display: flex;
         flex-direction: column;
         font-size: $little-title-font-height;
