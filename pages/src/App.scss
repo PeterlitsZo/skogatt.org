@@ -1,0 +1,73 @@
+$background-color: #282c34;
+$text-first-color: white;
+$text-second-color: #aaaaaa;
+
+$home-head-title-font-height: 18vmin;
+$text-font-height: 16px;
+$little-title-font-height: 20px;
+
+$page-padding: 16px;
+$content-padding: 16px;
+
+$line-height: 1px;
+
+$phone-width: 656px;
+
+html {
+    background-color: $background-color;
+}
+
+.App {
+    color: $text-first-color;
+    // 0.7 * $phone-width + 0.3 * width - 2 * padding => auto increasing when
+    // width is going to be bigger.
+    width: calc(#{$phone-width * 0.7} + 30vw - #{2 * $page-padding});
+    margin: auto;
+
+    .header {
+        min-height: 2 * $home-head-title-font-height;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        font-size: $home-head-title-font-height;
+
+        .footnote {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            color: $text-second-color;
+            font-size: $text-font-height;
+            align-items: center;
+            margin: 0;
+
+            p {
+                margin: 0;
+            }
+
+            .line {
+                flex: auto;
+                background-color: $text-second-color;
+                content: "";
+                display: inline-block;
+                height: $line-height;
+                margin: 0 $page-padding;
+            }
+        }
+    }
+
+    .content {
+        min-height: calc(100vh - #{2 * $home-head-title-font-height} - #{2 * $content-padding});
+        display: flex;
+        flex-direction: column;
+        font-size: $little-title-font-height;
+        padding: $content-padding 0;
+    }
+}
+
+/* for phone with little width */
+@media screen and (max-width: $phone-width) {
+    .App {
+        width: auto !important;
+        margin: $page-padding !important;
+    }
+}
