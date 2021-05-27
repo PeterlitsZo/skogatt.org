@@ -19,6 +19,8 @@ stop:
 	@docker rm -f peterlits-com
 	@echo ""
 
+rerun: stop run
+
 save:
 	@echo "\n[MAKE] Before save image, make sure that you have run 'make'..."
 	@echo "[MAME] Save to peterlits.tar...\n"
