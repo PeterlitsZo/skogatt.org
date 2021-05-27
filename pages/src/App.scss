@@ -1,4 +1,5 @@
 $background-color: #282c34;
+$dark-background-color: #181c24;
 $text-first-color: white;
 $text-second-color: #aaaaaa;
 
@@ -9,6 +10,7 @@ $text-margin: 0.4em 0;
 
 $page-padding: 16px;
 $content-padding: 32px;
+$buttom-padding: 8px;
 
 $line-height: 1px;
 
@@ -18,7 +20,26 @@ html {
     background-color: $background-color;
 }
 
-.App {
+.buttom {
+    display: inline-flex;
+    align-items: center;
+    color: $text-second-color;
+    font-size: $text-font-height;
+    padding: $buttom-padding;
+    cursor: pointer;
+    user-select: none;
+    
+    &:hover {
+        background-color: $dark-background-color;
+        color: $text-first-color;
+    }
+
+    .icon {
+        height: $text-font-height;
+    }
+}
+
+.app {
     color: $text-first-color;
     // 0.7 * $phone-width + 0.3 * width - 2 * padding => auto increasing when
     // width is going to be bigger.
@@ -93,7 +114,7 @@ html {
 
 /* for phone with little width */
 @media screen and (max-width: $phone-width) {
-    .App {
+    .app {
         width: auto !important;
         margin: $page-padding !important;
     }
