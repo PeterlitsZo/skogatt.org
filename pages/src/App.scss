@@ -10,7 +10,7 @@ $text-margin: 0.4em 0;
 
 $page-padding: 16px;
 $content-padding: 32px;
-$buttom-padding: 8px;
+$button-padding: 8px;
 
 $line-height: 1px;
 
@@ -20,12 +20,12 @@ html {
     background-color: $background-color;
 }
 
-.buttom {
+.button {
     display: inline-flex;
     align-items: center;
     color: $text-second-color;
     font-size: $text-font-height;
-    padding: $buttom-padding;
+    padding: $button-padding;
     cursor: pointer;
     user-select: none;
     
