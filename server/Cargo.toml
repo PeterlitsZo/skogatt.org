@@ -1,0 +1,13 @@
+[package]
+name = "peterlits-com-server"
+version = "0.1.0"
+authors = ["Peterlits Zo <peterlitszo@outlook.com>"]
+edition = "2018"
+
+[dependencies]
+env_logger = { version = "0.8.3" }
+hyper = { version = "0.14", features = ["full"] }
+log = { version = "0.4.14", features = ["max_level_debug", "release_max_level_warn"]}
+serde = { version = "1.0.117", features = ["derive"] }
+serde_json = { version = "1.0.59" }
+tokio = { version = "1", features = ["full"] }
