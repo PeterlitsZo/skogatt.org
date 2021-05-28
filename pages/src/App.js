@@ -4,6 +4,7 @@ import './App.scss';
 
 import LikeButtom from './components/LikeButton'
 import DislikeButtom from './components/DislikeButton'
+import {CommentHead, Comment} from './components/Comment'
 
 function App() {
   return (
@@ -21,8 +22,13 @@ function App() {
         <p>这里是 Peterlits 的小网站，它基于 nignx 反向代理，其中静态页面基于 React 框架，动态服务基于 Rust，封装在 docker 容器中运行。</p>
         <p>如果喜欢的话，可以在下面点赞哦，如果不喜欢的话也可以点踩哦，欢迎留言～</p>
       </div>
-      <LikeButtom />
-      <DislikeButtom />
+      <div className="buttons">
+        <LikeButtom />
+        <DislikeButtom />
+        <div className="none"/>
+        <CommentHead />
+      </div>
+      <Comment />
     </div>
   );
 }

@@ -36,7 +36,9 @@ export default class DislikeButton extends React.Component {
     return (
       <div className="button" onClick={this.addOne}>
         <Dislike className="icon" />
-        Disike({isNaN(this.state.dislike_number) ? '...' : this.state.dislike_number})
+        <span className="text">Disike(</span>
+        {isNaN(this.state.dislike_number) ? '...' : this.state.dislike_number}
+        <span className="text">)</span>
       </div>
     );
   }

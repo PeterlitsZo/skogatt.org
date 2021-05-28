@@ -36,7 +36,9 @@ export default class LikeButton extends React.Component {
     return (
       <div className="button" onClick={this.addOne}>
         <Like className="icon" />
-        Like({isNaN(this.state.like_number) ? '...' : this.state.like_number})
+        <span className="text">Like(</span>
+        {isNaN(this.state.like_number) ? '...' : this.state.like_number}
+        <span className="text">)</span>
       </div>
     );
   }
