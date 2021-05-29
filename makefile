@@ -1,7 +1,7 @@
 make-pages:
 	@echo "\n[MAKE] Building pages file... \n"
 	@cd pages && yarn build
-	@cd server && cargo build --release
+	@cd server && make release-build
 	@echo "\n[MAKE] Makeing docker image named 'peterlitszo/peterlits.com'... \n"
 	@docker build -t peterlitszo/peterlits.com .
 	@echo ""
