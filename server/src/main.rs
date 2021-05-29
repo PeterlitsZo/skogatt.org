@@ -9,7 +9,6 @@ use std::sync::{Arc, Mutex};
 use chrono::{Utc};
 use hyper::{Body, Response, Server, Request, Method, StatusCode};
 use hyper::body::{to_bytes};
-use hyper::server::conn::{AddrStream};
 use hyper::service::{make_service_fn, service_fn};
 use log::{info};
 use rusqlite::{params, Connection, Result};
@@ -37,9 +36,8 @@ struct Comments {
 ///   - Deal with those
 ///   - Return a response
 async fn handle(req: Request<Body>,
-          data: Arc<Mutex<Data>>,
-          conn: Arc<Mutex<Connection>>,
-          addr: SocketAddr)
+                data: Arc<Mutex<Data>>,
+                conn: Arc<Mutex<Connection>>)
         -> Response<Body>
 {
     let mut response = Response::new(Body::empty());
@@ -49,7 +47,6 @@ async fn handle(req: Request<Body>,
     match (req.method(), req.uri().path()) {
         (&Method::GET, "/api/v1/home/like") => {
             let like = data.lock().unwrap().like;
-            // *response.headers_mut() = ContentType::json();
             *response.body_mut() = Body::from(format!("{{\"like\":{}}}", like));
         },
         (&Method::POST, "/api/v1/home/like") => {
@@ -90,7 +87,10 @@ async fn handle(req: Request<Body>,
             *response.body_mut() = Body::from(json_text);
         },
         (&Method::POST, "/api/v1/home/comments") => {
-            let ip = format!("{}", addr.ip());
+            let ip = {
+                let ip = req.headers()["x-forwarded-for"].to_str().unwrap();
+                ip.to_string()
+            };
             let time = Utc::now().to_rfc3339();
             let text = to_bytes(req.into_body()).await.unwrap();
             let text = from_utf8(&text).unwrap();
@@ -167,23 +167,22 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     init_sqlite(conn.clone());
 
     // init the function to run the server
-    let addr = SocketAddr::from(([127, 0, 0, 1], 8100));
-    let make_svc = make_service_fn(move |web_conn: &AddrStream| {
+    let make_svc = make_service_fn(move |_conn| {
         let data = data.clone();
         let conn = conn.clone();
-        let addr = web_conn.remote_addr();
         async move {
             Ok::<_, Infallible>(service_fn(move |req: Request<Body>| {
                 let data = data.clone();
                 let conn = conn.clone();
                 async move {
-                    Ok::<_, Infallible>(handle(req, data, conn, addr).await)
+                    Ok::<_, Infallible>(handle(req, data, conn).await)
                 }
             }))
         }
     });
 
     // run the server
+    let addr = SocketAddr::from(([127, 0, 0, 1], 8100));
     info!("Listen to {}", addr);
     Server::bind(&addr).serve(make_svc).await?;
     Ok(())

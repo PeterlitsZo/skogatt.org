@@ -32,7 +32,7 @@ class CommentsItem extends React.Component {
       <div className="item">
         <div className="head">
           {this.props.content.ip}
-          -
+          <span> - </span>
           {moment(this.props.content.datetime).fromNow()}
         </div>
         <div className="text">{this.props.content.content}</div>

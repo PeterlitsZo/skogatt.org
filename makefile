@@ -27,6 +27,7 @@ save:
 	@docker save -o peterlits.tar peterlitszo/peterlits.com
 	@echo "\n[MAKE] OK. If want to push file to server, use command:"
 	@echo "[MAKE]    'scp peterlits.tar <name>@<IP/domain>:<path>'"
+	@echo "[MAKE]    or 'rsync -av peterlits.tar <name>@<IP/domain>:<path>'"
 	@echo "[MAKE] Use 'docker load --input <path>/peterlits.tar' to load image\n"
 
 shell:
