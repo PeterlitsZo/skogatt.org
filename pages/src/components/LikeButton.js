@@ -13,7 +13,7 @@ export default class LikeButton extends React.Component {
       .then(response => {
         console.log(response);
         this.setState({
-          like_number: response.data
+          like_number: response.data.like
         });
       })
       .catch(error => {

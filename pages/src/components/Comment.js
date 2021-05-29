@@ -18,38 +18,38 @@ export class CommentHead extends React.Component {
 }
 
 class CommentsItem extends React.Component {
-    constructor(props) {
-      super(props);
-
-      this.state = {
-        content: props.content
-      };
-    }
-    render() {
-      const content = this.state.content;
-      return (
-        <div className="item">
-          <div className="head">
-            {content.ip} - {moment(content.datetime).fromNow()}
-          </div>
-          <div className="text">{content.content}</div>
-        </div>
-      )
-    }
-}
-
-class CommentsList extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      list: props.list
+      content: props.content
     };
+    console.log(this.state);
   }
+  render() {
+    const content = this.state.content;
+    return (
+      <div className="item">
+        <div className="head">
+          {this.props.content.ip}
+          -
+          {moment(this.props.content.datetime).fromNow()}
+        </div>
+        <div className="text">{this.props.content.content}</div>
+      </div>
+    )
+  }
+}
+
+class CommentsList extends React.Component {
   render() {
     return (
       <div className="list">
-        {this.state.list.map((data) => <CommentsItem content={data}/>)}
+        {
+          this.props.list
+            .reverse()
+            .map((data) => <CommentsItem content={data}/>)
+        }
       </div>
     );
   }
@@ -58,20 +58,33 @@ class CommentsList extends React.Component {
 export class Comment extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {comments: []};
+    this.submit = this.submit.bind(this);
+    this.refresh = this.refresh.bind(this);
+    this.refresh();
+  }
+  refresh() {
+    axios.get('/api/v1/home/comments')
+      .then(response => {
+        console.log(response);
+        this.setState({
+          comments: response.data
+        });
+        console.log(this.state.comments);
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
+  submit(text) {
+    console.log('submit: ', text);
+    axios.post('/api/v1/home/comments', text)
   }
   render() {
     return (
       <div className="comment">
-        <Textbox />
-        <CommentsList list={
-          [
-            {ip: "127.0.0.1", content: "Hello World", datetime: moment('2001-5-3').format()},
-            {ip: "127.0.0.1", content: "Hello World", datetime: moment().format()},
-            {ip: "127.0.0.1", content: "Hello World", datetime: moment().format()},
-            {ip: "127.0.0.1", content: "Hello World", datetime: moment().format()},
-            {ip: "127.0.0.1", content: "Hello World", datetime: moment().format()},
-          ]
-        }/>
+        <Textbox submit={this.submit} refresh={this.refresh} />
+        <CommentsList list={this.state.comments}/>
       </div>
     );
   }

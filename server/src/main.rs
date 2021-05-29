@@ -2,7 +2,6 @@ use std::{env};
 use std::convert::{Infallible};
 use std::fs::{File};
 use std::io::{Read, Write};
-use std::iter::{FromIterator};
 use std::net::{SocketAddr};
 use std::str::{from_utf8};
 use std::sync::{Arc, Mutex};
@@ -92,7 +91,7 @@ async fn handle(req: Request<Body>,
         },
         (&Method::POST, "/api/v1/home/comments") => {
             let ip = format!("{}", addr.ip());
-            let time = format!("{}", Utc::now());
+            let time = Utc::now().to_rfc3339();
             let text = to_bytes(req.into_body()).await.unwrap();
             let text = from_utf8(&text).unwrap();
             info!("Insert to table comments: ($id, {}, {}, {})", ip, text, time);
