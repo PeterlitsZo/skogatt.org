@@ -6,7 +6,7 @@ use std::net::{SocketAddr};
 use std::str::{from_utf8};
 use std::sync::{Arc, Mutex};
 
-use chrono::{Utc};
+use chrono::{DateTime, Duration, Utc};
 use hyper::{Body, Response, Server, Request, Method, StatusCode};
 use hyper::body::{to_bytes};
 use hyper::service::{make_service_fn, service_fn};
@@ -68,6 +68,7 @@ async fn handle(req: Request<Body>,
         },
         (&Method::GET, "/api/v1/home/comments") => {
             let conn = conn.lock().unwrap();
+
             let mut stmt = conn.prepare("
                 SELECT id, ip, datetime, content FROM comments;
             ").unwrap();
@@ -87,6 +88,7 @@ async fn handle(req: Request<Body>,
             *response.body_mut() = Body::from(json_text);
         },
         (&Method::POST, "/api/v1/home/comments") => {
+            // Get the basic infomation
             let ip = {
                 let ip = req.headers()["x-forwarded-for"].to_str().unwrap();
                 ip.to_string()
@@ -94,11 +96,39 @@ async fn handle(req: Request<Body>,
             let time = Utc::now().to_rfc3339();
             let text = to_bytes(req.into_body()).await.unwrap();
             let text = from_utf8(&text).unwrap();
-            info!("Insert to table comments: ($id, {}, {}, {})", ip, text, time);
-            conn.lock().unwrap().execute("
-                INSERT INTO comments (ip, datetime, content)
-                    VALUES(?1, ?2, ?3);
-            ", params![ip, time, text]).unwrap();
+
+            // Get the last datetime of the comments that sended by the same IP
+            let conn = conn.lock().unwrap();
+            let mut stmt = conn.prepare("
+                SELECT datetime FROM comments
+                    WHERE ip = ?
+                    ORDER BY datetime(datetime) DESC
+                    LIMIT 1;
+            ").unwrap();
+            let lasttime: Vec<String> = stmt
+                .query_map([&ip], |row| row.get(0)).unwrap()
+                .map(|c| c.unwrap())
+                .collect();
+            assert!(lasttime.len() <= 1);
+
+            let mut OK = true;
+            if lasttime.len() == 1 {
+                let lasttime = DateTime::parse_from_rfc3339(&lasttime[0]).unwrap();
+                let lasttime = lasttime.with_timezone(&Utc);
+                OK = Utc::now() - lasttime > Duration::seconds(3);
+            }
+
+            // Raise error(403) if the last time the client send is too close
+            if !OK {
+                *response.status_mut() = StatusCode::FORBIDDEN;
+            // Or OK(200)
+            } else {
+                info!("Insert to table comments: ($id, {}, {}, {})", ip, text, time);
+                conn.execute("
+                    INSERT INTO comments (ip, datetime, content)
+                        VALUES(?1, ?2, ?3);
+                ", params![ip, time, text]).unwrap();
+            }
         },
         _ => {
             *response.status_mut() = StatusCode::NOT_FOUND;

@@ -67,6 +67,22 @@ html {
         }
     }
 
+    .info {
+        display: inline-flex;
+        align-items: center;
+        color: $text-second-color;
+        font-size: $text-font-height;
+        padding: $button-padding;
+    
+        .icon {
+            height: $text-font-height;
+        }
+
+        .phoneText {
+            display: none;
+        }
+    }
+
     .tab {
         position: relative;
         display: inline-flex;
@@ -273,9 +289,13 @@ html {
         margin: $page-padding !important;
     }
 
-    .button, .tab, .dark-button{
+    .button, .tab, .dark-button, .info{
         .text {
-            display: none;
+            display: none !important;
+        }
+
+        .phoneText {
+            display: static !important;
         }
     }
 }

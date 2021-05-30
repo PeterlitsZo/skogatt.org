@@ -3,7 +3,7 @@ import axios from 'axios';
 import moment from 'moment';
 
 import {ReactComponent as CommentIcon} from '../svg/message-circle.svg';
-import Textbox from './Textbox';
+import {Textbox} from './Textbox';
 
 export class CommentHead extends React.Component {
   render() {
@@ -59,6 +59,7 @@ export class Comment extends React.Component {
   constructor(props) {
     super(props);
     this.state = {comments: []};
+
     this.submit = this.submit.bind(this);
     this.refresh = this.refresh.bind(this);
     this.refresh();
@@ -70,15 +71,22 @@ export class Comment extends React.Component {
         this.setState({
           comments: response.data
         });
-        console.log(this.state.comments);
       })
       .catch(error => {
-        console.log(error);
+        console.error(error);
       });
   }
-  submit(text) {
+  // Submit. return value:
+  //  - true: submit successfully
+  //  - false: submit failly
+  async submit(text) {
     console.log('submit: ', text);
-    axios.post('/api/v1/home/comments', text)
+    try {
+      await axios.post('/api/v1/home/comments', text);
+      return true;
+    } catch (error) {
+      return false;
+    }
   }
   render() {
     return (
