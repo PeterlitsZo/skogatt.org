@@ -9,7 +9,11 @@ make-pages:
 run:
 	@echo "\n[MAKE] Before run server, make sure that you have run 'make'..."
 	@echo "[MAKE] Running docker image 'peterlitszo/peterlits.com'...\n"
-	@docker run -dp 80:80 --name peterlits-com peterlitszo/peterlits.com
+	@docker run \
+		-dp 80:80 \
+		--name peterlits-com \
+		-v ${PWD}/tmp/:/var/server/ \
+		peterlitszo/peterlits.com
 	@echo "\n[MAKE] If failed, try to run 'make stop' to stop running server"
 	@echo "[MAKE] Or Access by URL: 'http://localhost'...\n"
 

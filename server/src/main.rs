@@ -1,7 +1,10 @@
 use std::{env};
+use std::array::{IntoIter};
+use std::collections::{HashMap};
 use std::convert::{Infallible};
 use std::fs::{File};
 use std::io::{Read, Write};
+use std::iter::{FromIterator};
 use std::net::{SocketAddr};
 use std::str::{from_utf8};
 use std::sync::{Arc, Mutex};
@@ -69,20 +72,58 @@ async fn handle(req: Request<Body>,
         (&Method::GET, "/api/v1/home/comments") => {
             let conn = conn.lock().unwrap();
 
+            // Parse URL's query to hashmap.
+            let params = req.uri().query();
+            let params: HashMap<String, String> = params
+                .map(|v| {
+                    url::form_urlencoded::parse(v.as_bytes())
+                        .into_owned()
+                        .collect()
+                })
+                .unwrap_or_else(HashMap::new);
+            info!("Get argument of `/api/v1/home/comments`: {:?}", params);
+
+            // Get the table's lenth of table `comments` and calc the result's
+            // offset.
+            let length: Vec<i64> = conn.prepare("
+                SELECT COUNT(*) FROM comments;
+            ").unwrap()
+                .query_map([], |row| row.get(0)).unwrap()
+                .map(|c| c.unwrap())
+                .collect();
+            assert!(length.len() == 1);
+            let length = length[0];
+            let offset = 20 * match params.get("page") {
+                Some(number) => number.parse::<i64>().unwrap() - 1,
+                None => 0
+            };
+
+            // Get the data from database.
             let mut stmt = conn.prepare("
-                SELECT id, ip, datetime, content FROM comments;
+                SELECT id, ip, datetime, content
+                    FROM comments
+                    ORDER BY id DESC
+                    LIMIT 20 OFFSET ?;
             ").unwrap();
-            let result = stmt.query_map([], |row| {
+
+            let result = stmt.query_map([&offset], |row| {
                 Ok(Comments{
                     id: row.get(0).unwrap(),
                     ip: row.get(1).unwrap(),
                     datetime: row.get(2).unwrap(),
                     content: row.get(3).unwrap()
                 })
-            });
-            let result: Vec<Comments> = result.unwrap()
+            }).unwrap();
+            let result: Vec<Comments> = result
                 .map(|c| c.unwrap())
                 .collect();
+            let length = (length + 19) / 20;
+            let result = HashMap::<_, _>::from_iter(IntoIter::new([
+                    ("result", serde_json::to_string(&result).unwrap()),
+                    ("length", serde_json::to_string(&length).unwrap()),
+                ]));
+
+            // Convert to json to response.
             info!("Comments: {:?}", result);
             let json_text = serde_json::to_string(&result).unwrap();
             *response.body_mut() = Body::from(json_text);
@@ -111,15 +152,15 @@ async fn handle(req: Request<Body>,
                 .collect();
             assert!(lasttime.len() <= 1);
 
-            let mut OK = true;
+            let mut ok = true;
             if lasttime.len() == 1 {
                 let lasttime = DateTime::parse_from_rfc3339(&lasttime[0]).unwrap();
                 let lasttime = lasttime.with_timezone(&Utc);
-                OK = Utc::now() - lasttime > Duration::seconds(3);
+                ok = Utc::now() - lasttime > Duration::seconds(3);
             }
 
             // Raise error(403) if the last time the client send is too close
-            if !OK {
+            if !ok {
                 *response.status_mut() = StatusCode::FORBIDDEN;
             // Or OK(200)
             } else {
