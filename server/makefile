@@ -5,7 +5,6 @@ test:
 	cargo run
 
 release-build:
-	RUST_LOG=INFO \
 	JSON_FILE_NAME=/var/server/data.json \
 	DB_FILE_NAME=/var/server/db.sqlite \
 	cargo build --release

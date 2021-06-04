@@ -81,7 +81,7 @@ async fn handle(req: Request<Body>,
                         .collect()
                 })
                 .unwrap_or_else(HashMap::new);
-            info!("Get argument of `/api/v1/home/comments`: {:?}", params);
+            info!("  Get argument of `/api/v1/home/comments`: {:?}", params);
 
             // Get the table's lenth of table `comments` and calc the result's
             // offset.
@@ -94,7 +94,7 @@ async fn handle(req: Request<Body>,
             assert!(length.len() == 1);
             let length = length[0];
             let offset = 20 * match params.get("page") {
-                Some(number) => number.parse::<i64>().unwrap() - 1,
+                Some(number) => number.parse::<i64>().unwrap_or(1) - 1,
                 None => 0
             };
 
@@ -124,7 +124,7 @@ async fn handle(req: Request<Body>,
                 ]));
 
             // Convert to json to response.
-            info!("Comments: {:?}", result);
+            info!("  Get comments form {} to {}", offset, offset + 20);
             let json_text = serde_json::to_string(&result).unwrap();
             *response.body_mut() = Body::from(json_text);
         },
@@ -164,7 +164,7 @@ async fn handle(req: Request<Body>,
                 *response.status_mut() = StatusCode::FORBIDDEN;
             // Or OK(200)
             } else {
-                info!("Insert to table comments: ($id, {}, {}, {})", ip, text, time);
+                info!("  Insert to table comments: ($id, {}, {:.12}..., {})", ip, text, time);
                 conn.execute("
                     INSERT INTO comments (ip, datetime, content)
                         VALUES(?1, ?2, ?3);
@@ -184,7 +184,7 @@ async fn handle(req: Request<Body>,
             .write(json_text.as_bytes()).unwrap();
     }
 
-    info!("Response: {:?}", response);
+    info!("  Return response");
     response
 }
 
