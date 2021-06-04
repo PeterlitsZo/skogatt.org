@@ -28,56 +28,98 @@ export class CommentHead extends React.Component {
 class CommentsItem extends React.Component {
   constructor(props) {
     super(props);
+    const needFold = this.props.content.content.length > 250;
+    console.log(
+        this.props.content,
+        this.props.content.content.length,
+        needFold,
+    );
 
     this.state = {
-      content: props.content
+      fold: needFold,
     };
+
+    this.changeFoldState = this.changeFoldState.bind(this);
+  }
+
+  changeFoldState() {
+    this.setState({
+      fold: !this.state.fold,
+    });
   }
 
   render() {
-    const content = this.state.content;
+    /* type: {ip: string, datetime: string, content: string} */
+    const content = this.props.content;
+    const needFold = content.content.length > 250;
+
+    let fold_button = null;
+    let fold_buttons = null;
+
+    // If need fold content, then fold content and and `Fold/Unfold` button.
+    if (needFold) {
+      fold_button = (
+        <button
+          className="dark-button"
+          onClick={ this.changeFoldState }
+        >
+          { this.state.fold ? 'Unfold' : 'Fold' }
+        </button>
+      );
+    }
+    if (needFold) {
+      fold_buttons = (
+        <div className="buttons">
+          { fold_button }
+        </div>
+      );
+    }
+
+    let text = content.content;
+    if (this.state.fold) {
+      text = text.substring(0, 250) + '...';
+    }
+
     return (
       <div className="item">
-        <div className="head">
-          {this.props.content.ip}
+        <div className="head buttons">
+          { content.ip }
           <span> - </span>
-          {moment(this.props.content.datetime).fromNow()}
+          { moment(content.datetime).fromNow() }
+          <div className="none" />
+          { needFold && !this.state.fold ? fold_button : null }
         </div>
-        <div className="text">{this.props.content.content}</div>
+        <div className="text">
+          { text }
+        </div>
+        { fold_buttons }
       </div>
-    )
+    );
   }
 }
 
 class CommentsList extends React.Component {
   render() {
     console.log(this.props.comments);
+
+    const commentsList = this.props.comments.list
+      .map((data) => {
+        return <CommentsItem content={data} key={ data.id } />
+      });
+
+    const commentsListNav = (this.props.comments.length > 1
+      ? <PaperNav
+          current={this.props.comments.current}
+          length={this.props.comments.length}
+          handle={this.props.handle}
+        />
+      : null);
+
     return (
       <div className="list">
-        {
-          this.props.comments.length > 1
-            ? <PaperNav
-                current={this.props.comments.current}
-                length={this.props.comments.length}
-                handle={this.props.handle}
-              />
-            : null
-        }
-        <div>
-          {
-            this.props.comments.list
-              .map((data) => <CommentsItem content={data}/>)
-          }
-        </div>
-        {
-          this.props.comments.length > 1
-            ? <PaperNav
-                current={this.props.comments.current}
-                length={this.props.comments.length}
-                handle={this.props.handle}
-              />
-            : null
-        }
+        { commentsListNav }
+        <div>{ commentsList }</div>
+        { commentsListNav }
       </div>
     );
   }
