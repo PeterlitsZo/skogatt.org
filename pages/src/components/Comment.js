@@ -21,7 +21,7 @@ export class CommentHead extends React.Component {
         <span className="text">Comments</span>
         <div className="tabline"/>
       </div>
-    )
+    );
   }
 }
 
@@ -79,6 +79,9 @@ class CommentsItem extends React.Component {
     if (this.state.fold) {
       text = text.substring(0, 250) + '...';
     }
+    text = text.split('\n').map((i, key) => {
+      return <p key={key}>{i}</p>
+    });
 
     return (
       <div className="item">
@@ -89,9 +92,7 @@ class CommentsItem extends React.Component {
           <div className="none" />
           { needFold && !this.state.fold ? fold_button : null }
         </div>
-        <div className="text">
-          { text }
-        </div>
+        <div className="text">{ text }</div>
         { fold_buttons }
       </div>
     );
