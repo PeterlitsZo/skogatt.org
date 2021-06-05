@@ -183,7 +183,11 @@ html {
                 font-size: $text-font-height;
 
                 p {
-                    margin: $button-padding 0;
+                    margin: 0 0 $button-padding/2 0;
+
+                    &:last-child {
+                        margin: 0;
+                    }
                 }
             }
 
