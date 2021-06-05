@@ -8,10 +8,11 @@ $shadow-color: #5fef7440;
 $important-color: #5fef74;
 
 // FONT-HEIGHTs
-$home-head-title-font-height: 18vmin;
+$home-head-title-font-height: 12vmin;
 $help-font-height: 14px;
 $text-font-height: 16px;
-$little-title-font-height: 18px;
+$little-title-font-height: 20px;
+$title-font-height: 22px;
 
 // MARGINs
 $text-margin: 0.4em 0;
@@ -244,12 +245,12 @@ html {
         display: flex;
         flex-direction: column;
         justify-content: flex-end;
-        min-height: 2 * $home-head-title-font-height;
+        min-height: calc(max(#{2 * $home-head-title-font-height}, #{4 * $title-font-height}));
 
         .logo {
             flex: none;
             display: flex;
-            font-size: $home-head-title-font-height;
+            font-size: calc(max(#{$home-head-title-font-height}, #{2 * $title-font-height}));
             flex-direction: row;
             align-items: center;
 
