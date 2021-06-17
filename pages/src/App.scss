@@ -4,12 +4,15 @@ $dark-background-color: #181c24;
 $light-background-color: #383c44;
 $text-first-color: white;
 $text-second-color: #aaaaaa;
-$shadow-color: #2f6f44a0;
+$shadow-color: #5fef7440;
+$important-color: #5fef74;
 
 // FONT-HEIGHTs
-$home-head-title-font-height: 18vmin;
+$home-head-title-font-height: 12vmin;
+$help-font-height: 14px;
 $text-font-height: 16px;
 $little-title-font-height: 20px;
+$title-font-height: 22px;
 
 // MARGINs
 $text-margin: 0.4em 0;
@@ -17,7 +20,7 @@ $text-margin: 0.4em 0;
 // PADDINGs
 $page-padding: 16px;
 $content-padding: 32px;
-$button-padding: 8px;
+$button-padding: 6px;
 
 // LENGTHs
 $line-height: 1px;
@@ -31,6 +34,7 @@ html {
 .buttons {
     display: flex;
     gap: $button-padding;
+    align-items: center;
 
     .none {
         flex: auto;
@@ -40,7 +44,7 @@ html {
         display: inline-flex;
         align-items: center;
         color: $text-second-color;
-        font-size: $text-font-height;
+        font-size: $help-font-height;
         padding: $button-padding;
         cursor: pointer;
         user-select: none;
@@ -53,13 +57,14 @@ html {
         }
     
         .icon {
-            height: $text-font-height;
+            height: $help-font-height;
         }
     }
 
     .dark-button {
         border: solid 1px $light-background-color;
         background: $dark-background-color;
+        color: $text-second-color;
  
         &:hover {
             background-color: $light-background-color;
@@ -67,17 +72,34 @@ html {
         }
     }
 
+    .info {
+        display: inline-flex;
+        align-items: center;
+        color: $text-second-color;
+        font-size: $help-font-height;
+        padding: $button-padding;
+    
+        .icon {
+            height: $help-font-height;
+        }
+
+        .phoneText {
+            display: none;
+        }
+    }
+
     .tab {
+        align-self: stretch;
         position: relative;
         display: inline-flex;
         align-items: center;
         color: $text-second-color;
-        font-size: $text-font-height;
+        font-size: $help-font-height;
         padding: $button-padding;
         background: $dark-background-color;
 
         .icon {
-            height: $text-font-height;
+            height: $help-font-height;
         }
 
         .tabline {
@@ -111,6 +133,21 @@ html {
     }
 }
 
+.nav {
+    padding: 0 $button-padding;
+    margin: 0 0 $button-padding 0;
+    font-size: $help-font-height;
+
+    .current {
+        color: $important-color;
+        font-weight: bold;
+    }
+
+    .icon {
+        height: $help-font-height;
+    }
+}
+
 .comment {
     display: flex;
     flex-direction: column;
@@ -138,12 +175,20 @@ html {
 
             .head {
                 color: $text-second-color;
-                font-size: $text-font-height;
+                font-size: $help-font-height;
             }
 
             .text {
                 color: $text-first-color;
-                font-size: $little-title-font-height;
+                font-size: $text-font-height;
+
+                p {
+                    margin: 0 0 $button-padding/2 0;
+
+                    &:last-child {
+                        margin: 0;
+                    }
+                }
             }
 
             &:hover {
@@ -161,13 +206,13 @@ html {
         display: flex;
         flex-direction: row;
         align-items: center;
-        font-size: $text-font-height;
+        font-size: $help-font-height;
         background: $dark-background-color;
         padding: $button-padding;
         color: $text-second-color;
 
         .icon {
-            height: $text-font-height;
+            height: $help-font-height;
         }
     }
 
@@ -204,12 +249,12 @@ html {
         display: flex;
         flex-direction: column;
         justify-content: flex-end;
-        min-height: 2 * $home-head-title-font-height;
+        min-height: calc(max(#{2 * $home-head-title-font-height}, #{4 * $title-font-height}));
 
         .logo {
             flex: none;
             display: flex;
-            font-size: $home-head-title-font-height;
+            font-size: calc(max(#{$home-head-title-font-height}, #{2 * $title-font-height}));
             flex-direction: row;
             align-items: center;
 
@@ -235,7 +280,7 @@ html {
             display: flex;
             flex-direction: row;
             color: $text-second-color;
-            font-size: $text-font-height;
+            font-size: $help-font-height;
             align-items: center;
             margin: 0;
 
@@ -257,12 +302,37 @@ html {
     .content {
         display: flex;
         flex-direction: column;
-        font-size: $little-title-font-height;
+        font-size: $text-font-height;
         padding: $content-padding 0;
 
         p {
             margin: $text-margin;
         }
+    }
+}
+
+input {
+    position: relative;
+    box-sizing: border-box;
+    z-index: 1px;
+    width: 64px; // TODO
+    padding: $button-padding;
+    margin: 0;
+    color: $text-first-color;
+    font-size: $help-font-height;
+    background: $light-background-color;
+    border: none;
+    border-radius: 0px !important;
+    outline: none;
+
+    &:focus {
+        box-shadow: 0 0 0 $shadow-length $shadow-color;
+    }
+}
+
+label {
+    input {
+        margin: 0 0 0 $button-padding;
     }
 }
 
@@ -273,12 +343,28 @@ html {
         margin: $page-padding !important;
     }
 
-    .button, .tab, .dark-button{
+    .button, .tab, .dark-button, .info{
         .text {
-            display: none;
+            display: none !important;
+        }
+
+        .phoneText {
+            display: static !important;
         }
     }
+
+    .notForPhone {
+        display: none !important;
+    }
 }
+
+// For other devides
+@media screen and (min-width: $phone-width + 0.1px) {
+    .forPhone {
+        display: none !important;
+    }
+}
+
 
 @keyframes flash {
   from {

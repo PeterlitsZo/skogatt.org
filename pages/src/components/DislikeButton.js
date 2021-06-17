@@ -13,7 +13,7 @@ export default class DislikeButton extends React.Component {
       .then(response => {
         console.log(response);
         this.setState({
-          dislike_number: response.data
+          dislike_number: response.data.dislike
         });
       })
       .catch(error => {
