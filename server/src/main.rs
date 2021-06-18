@@ -1,36 +1,32 @@
 mod home;
 mod database;
 
-use std::{env};
-use std::array::{IntoIter};
-use std::collections::{HashMap};
-use std::convert::{Infallible};
+use std::collections::HashMap;
+use std::convert::Infallible;
 use std::fs::File;
-use std::io::{Read, Write};
-use std::iter::{FromIterator};
-use std::net::{SocketAddr};
-use std::str::{from_utf8};
+use std::io::Write;
+use std::net::SocketAddr;
+use std::str::from_utf8;
 use std::sync::{Arc, Mutex};
 
-use chrono::{DateTime, Duration, Utc};
+use chrono::Utc;
 use hyper::{Body, Response, Server, Request, Method, StatusCode};
-use hyper::body::{to_bytes};
+use hyper::body::to_bytes;
 use hyper::service::{make_service_fn, service_fn};
-use log::{info};
-use rusqlite::{params, Connection, Result};
-use serde::{Deserialize, Serialize};
+use log::info;
+use rusqlite::{Connection, Result};
 
 use crate::home::{
     like::{
         Data,
-        addLike,
-        addDislike,
-        getLikeJSON,
-        getDislikeJSON,
+        add_like,
+        add_dislike,
+        get_like_json,
+        get_dislike_json,
     },
     comments::{
-        getComments,
-        addComments,
+        get_comments,
+        add_comment,
     },
 };
 use crate::database::{
@@ -55,17 +51,17 @@ async fn handle(req: Request<Body>,
     info!("{} {}", req.method(), req.uri());
     match (req.method(), req.uri().path()) {
         (&Method::GET, "/api/v1/home/like") => {
-            *response.body_mut() = Body::from(getLikeJSON(data.clone()));
+            *response.body_mut() = Body::from(get_like_json(data.clone()));
         },
         (&Method::POST, "/api/v1/home/like") => {
-            addLike(data.clone());
+            add_like(data.clone());
             write = true;
         },
         (&Method::GET, "/api/v1/home/dislike") => {
-            *response.body_mut() = Body::from(getDislikeJSON(data.clone()));
+            *response.body_mut() = Body::from(get_dislike_json(data.clone()));
         },
         (&Method::POST, "/api/v1/home/dislike") => {
-            addDislike(data.clone());
+            add_dislike(data.clone());
             write = true;
         },
         (&Method::GET, "/api/v1/home/comments") => {
@@ -85,14 +81,14 @@ async fn handle(req: Request<Body>,
             };
 
 
-            *response.body_mut() = Body::from(getComments(conn.clone(), page));
+            *response.body_mut() = Body::from(get_comments(conn.clone(), page));
         },
         (&Method::POST, "/api/v1/home/comments") => {
             let ip = req.headers()["x-forwarded-for"].to_str().unwrap()
                 .to_string();
             let text = to_bytes(req.into_body()).await.unwrap();
             let text = from_utf8(&text).unwrap();
-            addComments(conn.clone(), ip, Utc::now(), text, &mut response);
+            add_comment(conn.clone(), ip, Utc::now(), text, &mut response);
         },
         _ => {
             *response.status_mut() = StatusCode::NOT_FOUND;

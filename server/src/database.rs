@@ -2,7 +2,7 @@ use std::sync::{Arc, Mutex};
 use std::fs::File;
 use std::io::{Read, Write};
 
-use rusqlite::{params, Connection, Result};
+use rusqlite::Connection;
 use log::info;
 
 use crate::home::like::Data;

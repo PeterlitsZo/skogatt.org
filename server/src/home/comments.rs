@@ -2,11 +2,11 @@ use std::sync::{Arc, Mutex};
 use std::collections::HashMap;
 
 use chrono::{DateTime, Duration, Utc};
-use rusqlite::{params, Connection, Result};
+use rusqlite::{params, Connection};
 use serde::{Deserialize, Serialize};
 use log::info;
 use serde_json::to_string;
-use hyper::{Body, Response, Server, Request, Method, StatusCode};
+use hyper::{Body, Response, StatusCode};
 
 #[derive(Serialize, Deserialize, Debug)]
 struct Comments {
@@ -18,7 +18,7 @@ struct Comments {
 
 /// Get the comments by given argument `conn`(SQLite connection) and `page` of
 /// comments
-pub fn getComments(conn: Arc<Mutex<Connection>>, page: i64) -> String {
+pub fn get_comments(conn: Arc<Mutex<Connection>>, page: i64) -> String {
     let conn = conn.lock().unwrap();
 
     // Get the table's lenth of table `comments` and calc the result's
@@ -64,7 +64,7 @@ pub fn getComments(conn: Arc<Mutex<Connection>>, page: i64) -> String {
     to_string(&result).unwrap()
 }
 
-pub fn addComments(
+pub fn add_comment(
         conn: Arc<Mutex<Connection>>,
         ip: String,
         time: DateTime<Utc>,
