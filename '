@@ -6,7 +6,6 @@ import {ReactComponent as Loading} from '../svg/loader.svg';
 import {ReactComponent as Loading3s} from '../svg/loading-3s.svg';
 
 import {Button} from './Button';
-import {ButtonsGroup, Info, Placeholder} from './ButtonsGroup';
 
 export class Textbox extends React.Component {
   constructor(props) {
@@ -48,7 +47,6 @@ export class Textbox extends React.Component {
     if (flag) {
       this.setState({text: ''});
       this.refresh();
-    // else show warning
     } else {
       this.setState({error_log: true});
       if (this.before_info_timeout_handle) {
@@ -103,7 +101,7 @@ export class Textbox extends React.Component {
       submitButtonIcon = <Loading />;
     }
     let submitButton = (
-      <Button dark clickFunction={this.handleSubmit}>
+      <Button className="dark-button" clickFunction={this.handleSubmit}>
         {submitButtonIcon}
         <span className="text">Submit</span>
       </Button>
@@ -113,11 +111,11 @@ export class Textbox extends React.Component {
       <div className="textbox">
         {title}
         {textarea}
-        <ButtonsGroup>
-          <Placeholder />
+        <div className="buttons bottom">
+          <div className="none"/>
           {warning}
           {submitButton}
-        </ButtonsGroup>
+        </div>
       </div>
     );
   }
@@ -129,11 +127,11 @@ class Warning extends React.Component {
     let props = this.props
     if (props.show) {
       return (
-        <Info>
+        <div className="info">
           <Loading3s className="icon" key={props.refreshKey} />
           <span className="text">{props.msg}</span>
           <span className="phoneText">{props.phoneMsg}</span>
-        </Info>
+        </div>
       );
     } else {
       return null;

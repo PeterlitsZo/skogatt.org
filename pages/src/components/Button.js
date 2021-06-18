@@ -5,15 +5,17 @@ import {ReactComponent as Dislike} from '../svg/thumbs-down.svg'
 import {ReactComponent as Like} from '../svg/thumbs-up.svg';
 import {ReactComponent as IDontKnow} from '../svg/more-horizontal.svg';
 
-import {button, notForPhoneText} from './Button.module.scss';
+import {notForPhoneText} from './ButtonsGroup.module.scss';
+import {button, darkButton} from './Button.module.scss';
 
 export class Button extends React.Component {
   render() {
-    let clickFunction = this.props.clickFunction;
+    let buttonClass = this.props.dark ? darkButton : button;
     let children = this.props.children;
+    let clickFunction = this.props.clickFunction;
 
     return (
-      <button className={button} onClick={clickFunction}>
+      <button className={buttonClass} onClick={clickFunction}>
         {children}
       </button>
     )

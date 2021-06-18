@@ -12,32 +12,31 @@ import {ReactComponent as After} from '../svg/chevron-right.svg';
 import {ReactComponent as Tail} from '../svg/chevrons-right.svg';
 
 import {Textbox} from './Textbox';
+import {ButtonsGroup, Tag, Placeholder, Info} from './ButtonsGroup';
+import {Button} from './Button';
 
+// The head of comments. It is a `Tag` in `ButtonsGroup`.
 export class CommentHead extends React.Component {
   render() {
     return (
-      <div className="tab">
-        <CommentIcon className="icon"/>
-        <span className="text">Comments</span>
-        <div className="tabline"/>
-      </div>
+      <Tag withLine>
+        <CommentIcon />
+        <span>Comments</span>
+      </Tag>
     );
   }
 }
 
+// The element of comments' list.
 class CommentsItem extends React.Component {
   constructor(props) {
     super(props);
-    const needFold = this.props.content.content.length > 250;
-    console.log(
-        this.props.content,
-        this.props.content.content.length,
-        needFold,
-    );
+    const fold = this.props.content.content.length > 250;
 
-    this.state = {
-      fold: needFold,
-    };
+    // `fold`: boolean type:
+    //  - true: this `CommentsItem` is folded (with a button to `unfold`).
+    //  - false: unfolded (with a button to `fold`).
+    this.state = { fold };
 
     this.changeFoldState = this.changeFoldState.bind(this);
   }
@@ -54,46 +53,36 @@ class CommentsItem extends React.Component {
     const needFold = content.content.length > 250;
 
     let fold_button = null;
-    let fold_buttons = null;
+    let text = content.content;
 
     // If need fold content, then fold content and and `Fold/Unfold` button.
     if (needFold) {
       fold_button = (
-        <button
-          className="dark-button"
-          onClick={ this.changeFoldState }
-        >
+        <Button dark clickFunction={ this.changeFoldState }>
           { this.state.fold ? 'Unfold' : 'Fold' }
-        </button>
+        </Button>
       );
-    }
-    if (needFold) {
-      fold_buttons = (
-        <div className="buttons">
-          { fold_button }
-        </div>
-      );
+      if (this.state.fold)
+        text = text.substring(0, 250) + '...';
     }
 
-    let text = content.content;
-    if (this.state.fold) {
-      text = text.substring(0, 250) + '...';
-    }
+    // split text with newline token(`\n`), and then render those to `<p>`
+    // elements.
     text = text.split('\n').map((i, key) => {
       return <p key={key}>{i}</p>
     });
 
     return (
       <div className="item">
-        <div className="head buttons">
-          { content.ip }
-          <span> - </span>
-          { moment(content.datetime).fromNow() }
-          <div className="none" />
-          { needFold && !this.state.fold ? fold_button : null }
-        </div>
+        <ButtonsGroup>
+          <Info>{ content.ip }</Info>
+          <Info> - </Info>
+          <Info>{ moment(content.datetime).fromNow() }</Info>
+          <Placeholder />
+          { fold_button }
+        </ButtonsGroup>
         <div className="text">{ text }</div>
-        { fold_buttons }
+        <ButtonsGroup>{ fold_button }</ButtonsGroup>
       </div>
     );
   }
