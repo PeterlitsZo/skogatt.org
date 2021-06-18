@@ -1,31 +1,4 @@
-// COLORs
-$background-color: #282c34;
-$dark-background-color: #181c24;
-$light-background-color: #383c44;
-$text-first-color: white;
-$text-second-color: #aaaaaa;
-$shadow-color: #5fef7440;
-$important-color: #5fef74;
-
-// FONT-HEIGHTs
-$home-head-title-font-height: 12vmin;
-$help-font-height: 14px;
-$text-font-height: 16px;
-$little-title-font-height: 20px;
-$title-font-height: 22px;
-
-// MARGINs
-$text-margin: 0.4em 0;
-
-// PADDINGs
-$page-padding: 16px;
-$content-padding: 32px;
-$button-padding: 6px;
-
-// LENGTHs
-$line-height: 1px;
-$phone-width: 656px;
-$shadow-length: 8px;
+@import "variables";
 
 html {
     background-color: $background-color;

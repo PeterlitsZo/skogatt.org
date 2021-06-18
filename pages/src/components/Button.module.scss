@@ -1,0 +1,31 @@
+@import "../variables";
+
+.button {
+    display: inline-flex;
+    align-items: center;
+    color: $text-second-color;
+    font-size: $help-font-height;
+    padding: $button-padding;
+    cursor: pointer;
+    user-select: none;
+    border: solid 1px $dark-background-color;
+    background: $background-color;
+    
+    &:hover {
+        background-color: $dark-background-color;
+        color: $text-first-color;
+    }
+
+    svg {
+        height: $help-font-height;
+    }
+}
+
+// for phone with little width
+@media screen and (max-width: $phone-width) {
+    .button {
+        .notForPhoneText{
+            display: none !important;
+        }
+    }
+}

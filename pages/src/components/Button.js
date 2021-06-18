@@ -3,25 +3,43 @@ import axios from 'axios';
 
 import {ReactComponent as Dislike} from '../svg/thumbs-down.svg'
 import {ReactComponent as Like} from '../svg/thumbs-up.svg';
+import {ReactComponent as IDontKnow} from '../svg/more-horizontal.svg';
+
+import {button, notForPhoneText} from './Button.module.scss';
+
+export class Button extends React.Component {
+  render() {
+    let clickFunction = this.props.clickFunction;
+    let children = this.props.children;
+
+    return (
+      <button className={button} onClick={clickFunction}>
+        {children}
+      </button>
+    )
+  }
+}
 
 export class DislikeButton extends React.Component {
   constructor(props) {
     super(props);
     this.state = {dislike_number: NaN};
-
     this.addOne = this.addOne.bind(this);
+
+    // get data from server
     axios.get('/api/v1/home/dislike')
       .then(response => {
-        console.log(response);
         this.setState({
           dislike_number: response.data.dislike
         });
       })
       .catch(error => {
-        console.log(error);
+        console.log("Dislike Button", error);
       });
   }
+    
   addOne() {
+    // If get data(this.state.dislike_number is not NaN), then +1.
     this.setState(state => {
       if (isNaN(state.dislike_number)) {
         return {}
@@ -33,14 +51,23 @@ export class DislikeButton extends React.Component {
       }
     });
   }
+
   render() {
+    // render a button that show this.state.dislike_number. If clicked, then +1.
+    let infomation_number;
+    if(isNaN(this.state.dislike_number)) {
+        infomation_number = <IDontKnow />;
+    } else {
+        infomation_number = <span>{this.state.dislike_number}</span>;
+    }
+
     return (
-      <div className="button" onClick={this.addOne}>
-        <Dislike className="icon" />
-        <span className="text">Disike(</span>
-        {isNaN(this.state.dislike_number) ? '...' : this.state.dislike_number}
-        <span className="text">)</span>
-      </div>
+      <Button clickFunction={this.addOne}>
+        <Dislike />
+        <span className={notForPhoneText}>Disike(</span>
+          {infomation_number}
+        <span className={notForPhoneText}>)</span>
+      </Button>
     );
   }
 }
@@ -50,20 +77,22 @@ export class LikeButton extends React.Component {
   constructor(props) {
     super(props);
     this.state = {like_number: NaN};
-
     this.addOne = this.addOne.bind(this);
+
+    // get data from server
     axios.get('/api/v1/home/like')
       .then(response => {
-        console.log(response);
         this.setState({
           like_number: response.data.like
         });
       })
       .catch(error => {
-        console.log(error);
+        console.log("Like Button: ", error);
       });
   }
+
   addOne() {
+    // If get data(this.state.dislike_number is not NaN), then +1.
     this.setState(state => {
       if (isNaN(state.like_number)) {
         return {}
@@ -75,14 +104,23 @@ export class LikeButton extends React.Component {
       }
     });
   }
+
   render() {
+    // render a button that show this.state.dislike_number. If clicked, then +1.
+    let infomation_number;
+    if(isNaN(this.state.like_number)) {
+        infomation_number = <IDontKnow />;
+    } else {
+        infomation_number = <span>{this.state.like_number}</span>;
+    }
+
     return (
-      <div className="button" onClick={this.addOne}>
-        <Like className="icon" />
-        <span className="text">Like(</span>
-        {isNaN(this.state.like_number) ? '...' : this.state.like_number}
-        <span className="text">)</span>
-      </div>
+      <Button clickFunction={this.addOne}>
+        <Like />
+        <span className={notForPhoneText}>Disike(</span>
+          {infomation_number}
+        <span className={notForPhoneText}>)</span>
+      </Button>
     );
   }
 }
