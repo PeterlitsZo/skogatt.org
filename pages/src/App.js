@@ -2,8 +2,7 @@ import React from 'react';
 
 import './App.scss';
 
-import LikeButtom from './components/LikeButton'
-import DislikeButtom from './components/DislikeButton'
+import {LikeButton, DislikeButton} from './components/Button'
 import {CommentHead, Comment} from './components/Comment'
 
 function App() {
@@ -23,8 +22,8 @@ function App() {
         <p>如果喜欢的话，可以在下面点赞哦，如果不喜欢的话也可以点踩哦，欢迎留言～</p>
       </div>
       <div className="buttons">
-        <LikeButtom />
-        <DislikeButtom />
+        <LikeButton />
+        <DislikeButton />
         <div className="none"/>
         <CommentHead />
       </div>
