@@ -8,6 +8,8 @@ import {ReactComponent as Loading3s} from '../svg/loading-3s.svg';
 import {Button} from './Button';
 import {ButtonsGroup, Info, Placeholder} from './ButtonsGroup';
 
+import {textbox} from './Textbox.module.scss';
+
 export class Textbox extends React.Component {
   constructor(props) {
     super(props);
@@ -69,10 +71,9 @@ export class Textbox extends React.Component {
   render() {
     // Title of the textarea.
     let title = (
-      <div className="title" onClick={this.focusTextArea}>
-        <Text className="icon" />
-        Text for submit:
-      </div>
+      <ButtonsGroup onClick={this.focusTextArea}>
+        <Info><Text />Text for submit:</Info>
+      </ButtonsGroup>
     );
 
     // Main part of textarea.
@@ -110,7 +111,7 @@ export class Textbox extends React.Component {
     );
 
     return (
-      <div className="textbox">
+      <div className={textbox}>
         {title}
         {textarea}
         <ButtonsGroup>
