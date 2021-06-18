@@ -66,7 +66,7 @@ export class DislikeButton extends React.Component {
     return (
       <Button clickFunction={this.addOne}>
         <Dislike />
-        <span className={notForPhoneText}>Disike(</span>
+        <span className={notForPhoneText}>Dislike(</span>
           {infomation_number}
         <span className={notForPhoneText}>)</span>
       </Button>
@@ -119,7 +119,7 @@ export class LikeButton extends React.Component {
     return (
       <Button clickFunction={this.addOne}>
         <Like />
-        <span className={notForPhoneText}>Disike(</span>
+        <span className={notForPhoneText}>Like(</span>
           {infomation_number}
         <span className={notForPhoneText}>)</span>
       </Button>
