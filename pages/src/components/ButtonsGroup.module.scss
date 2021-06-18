@@ -71,11 +71,16 @@
             }
         }
     }
+
+    // Svg icon
+    svg {
+        height: $help-font-height;
+    }
 }
 
 // for phone with little width
 @media screen and (max-width: $phone-width) {
-    .notForPhoneText{
+    .forDevice{
         display: none !important;
     }
 }

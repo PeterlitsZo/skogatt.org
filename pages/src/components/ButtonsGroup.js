@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {buttonsGroup, placeholder, tag, tagline, info} from './ButtonsGroup.module.scss';
+import {buttonsGroup, placeholder, tag, tagline, info, forPhone, forDevice} from './ButtonsGroup.module.scss';
 
 export class ButtonsGroup extends React.Component {
   render() {
@@ -43,8 +43,16 @@ export class Info extends React.Component {
   render() {
     let children = this.props.children;
 
+    let infoClass = info;
+    if(this.props.forPhone) {
+      infoClass += ' ' + forPhone;
+    }
+    if(this.props.forDevice) {
+      infoClass += ' ' + forDevice;
+    }
+
     return (
-      <span className={info} >
+      <span className={infoClass} >
         {children}
       </span>
     );

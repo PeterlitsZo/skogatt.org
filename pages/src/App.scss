@@ -4,108 +4,6 @@ html {
     background-color: $background-color;
 }
 
-.buttons {
-    display: flex;
-    gap: $button-padding;
-    align-items: center;
-
-    .none {
-        flex: auto;
-    }
-
-    .button, .dark-button {
-        display: inline-flex;
-        align-items: center;
-        color: $text-second-color;
-        font-size: $help-font-height;
-        padding: $button-padding;
-        cursor: pointer;
-        user-select: none;
-        border: solid 1px $dark-background-color;
-        background: $background-color;
-        
-        &:hover {
-            background-color: $dark-background-color;
-            color: $text-first-color;
-        }
-    
-        .icon {
-            height: $help-font-height;
-        }
-    }
-
-    .dark-button {
-        border: solid 1px $light-background-color;
-        background: $dark-background-color;
-        color: $text-second-color;
- 
-        &:hover {
-            background-color: $light-background-color;
-            color: $text-first-color;
-        }
-    }
-
-    .info {
-        display: inline-flex;
-        align-items: center;
-        color: $text-second-color;
-        font-size: $help-font-height;
-        padding: $button-padding;
-    
-        .icon {
-            height: $help-font-height;
-        }
-
-        .phoneText {
-            display: none;
-        }
-    }
-
-    .tab {
-        align-self: stretch;
-        position: relative;
-        display: inline-flex;
-        align-items: center;
-        color: $text-second-color;
-        font-size: $help-font-height;
-        padding: $button-padding;
-        background: $dark-background-color;
-
-        .icon {
-            height: $help-font-height;
-        }
-
-        .tabline {
-            position: absolute;
-            left: 0;
-            right: 0;
-            bottom: -$button-padding;
-            height: $button-padding;
-            background: $dark-background-color;
-
-            &::before {
-                content: "";
-                position: absolute;
-                left: $button-padding;
-                right: $button-padding;
-                top: 0;
-                height: $line-height;
-                background: $light-background-color;
-            }
-
-            &::after {
-                content: "";
-                position: absolute;
-                left: $button-padding;
-                right: $button-padding;
-                bottom: 0;
-                height: $line-height;
-                background: $light-background-color;
-            }
-        }
-    }
-}
-
 .nav {
     padding: 0 $button-padding;
     margin: 0 0 $button-padding 0;
@@ -126,6 +24,7 @@ html {
     flex-direction: column;
     margin: $button-padding 0 0 0;
     background: $dark-background-color;
+    padding: $button-padding;
 
     .list {
         position: relative;
@@ -137,8 +36,8 @@ html {
             content: "";
             position: absolute;
             top: 0;
-            left: $button-padding;
-            right: $button-padding;
+            left: 0;
+            right: 0;
             height: $line-height;
             background: $light-background-color;
         }
