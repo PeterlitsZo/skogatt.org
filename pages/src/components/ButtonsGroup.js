@@ -5,9 +5,14 @@ import {buttonsGroup, placeholder, tag, tagline, info, forPhone, forDevice} from
 export class ButtonsGroup extends React.Component {
   render() {
     let children = this.props.children;
+    let buttonsGroupClass = buttonsGroup;
+    if (this.props.className) {
+      buttonsGroupClass += ' ' + this.props.className;
+    }
+    console.log("className: ", buttonsGroupClass);
 
     return (
-      <div className={buttonsGroup}>
+      <div className={buttonsGroupClass}>
         {children}
       </div>
     );

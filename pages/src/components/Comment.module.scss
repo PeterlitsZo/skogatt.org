@@ -1,1 +1,53 @@
 @import "../variables";
+
+.list {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 2*$button-padding 0 0 0;
+
+    &::before {
+        content: "";
+        position: absolute;
+        top: $button-padding;
+        left: 0;
+        right: 0;
+        height: $line-height;
+        background: $light-background-color;
+    }
+
+    .head {
+        margin: 0 0 $button-padding 0;
+    }
+
+    .tail {
+        margin: $button-padding 0 0 0;
+    }
+
+    .item {
+        padding: $button-padding 0;
+
+        .text {
+            font-size: $text-font-height;
+    
+            color: $text-first-color;
+    
+            p {
+                margin: 0 0 $button-padding/2 0;
+    
+                &:last-child {
+                    margin: 0;
+                }
+            }
+        }
+    
+        &:hover {
+            background: $background-color;
+        }
+    }
+}
+
+.current {
+    color: $important-color;
+    font-weight: bold;
+}

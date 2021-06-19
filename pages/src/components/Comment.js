@@ -16,6 +16,7 @@ import {ButtonsGroup, Tag, Placeholder, Info} from './ButtonsGroup';
 import {Button} from './Button';
 
 import {forPhone, forDevice} from './ButtonsGroup.module.scss';
+import {item, text, list, head, tail, current as currentClass} from './Comment.module.scss';
 
 // The head of comments. It is a `Tag` in `ButtonsGroup`.
 export class CommentHead extends React.Component {
@@ -55,7 +56,7 @@ class CommentsItem extends React.Component {
     const needFold = content.content.length > 250;
 
     let fold_button = null;
-    let text = content.content;
+    let contentText = content.content;
 
     // If need fold content, then fold content and and `Fold/Unfold` button.
     if (needFold) {
@@ -65,17 +66,17 @@ class CommentsItem extends React.Component {
         </Button>
       );
       if (this.state.fold)
-        text = text.substring(0, 250) + '...';
+        contentText = contentText.substring(0, 250) + '...';
     }
 
     // split text with newline token(`\n`), and then render those to `<p>`
     // elements.
-    text = text.split('\n').map((i, key) => {
+    contentText = contentText.split('\n').map((i, key) => {
       return <p key={key}>{i}</p>
     });
 
     return (
-      <div className="item">
+      <div className={item}>
         <ButtonsGroup>
           <Info>{ content.ip }</Info>
           <Info> - </Info>
@@ -83,7 +84,7 @@ class CommentsItem extends React.Component {
           <Placeholder />
           { fold_button }
         </ButtonsGroup>
-        <div className="text">{ text }</div>
+        <div className={text}>{ contentText }</div>
         <ButtonsGroup>{ fold_button }</ButtonsGroup>
       </div>
     );
@@ -99,19 +100,22 @@ class CommentsList extends React.Component {
         return <CommentsItem content={data} key={ data.id } />
       });
 
-    const commentsListNav = (this.props.comments.length > 1
+    const commentsListNav = className => (
+      this.props.comments.length > 1
       ? <PaperNav
           current={this.props.comments.current}
           length={this.props.comments.length}
           handle={this.props.handle}
+          className={className}
         />
       : null);
 
+    console.log(head, tail);
     return (
-      <div className="list">
-        { commentsListNav }
+      <div className={list}>
+        { commentsListNav(head) }
         <div>{ commentsList }</div>
-        { commentsListNav }
+        { commentsListNav(tail) }
       </div>
     );
   }
@@ -226,7 +230,7 @@ export class PaperNav extends React.Component {
 
     // Display the `current` button
     result.push(
-      <Info className={current}>{current}</Info>,
+      <span className={currentClass}>{current}</span>,
       <Info forPhone>/ {length}</Info>,
     );
 
@@ -265,7 +269,7 @@ export class PaperNav extends React.Component {
 
     // Render the buttons
     return (
-      <ButtonsGroup>
+      <ButtonsGroup className={this.props.className}>
         <Pages />
         {result.length ? result : null}
       </ButtonsGroup>
