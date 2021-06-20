@@ -2,9 +2,9 @@ import React from 'react';
 
 import './App.scss';
 
-import {LikeButton, DislikeButton} from './components/Button';
-import {CommentHead, Comment} from './components/Comment';
-import {ButtonsGroup, Placeholder} from './components/ButtonsGroup';
+import {LikeButton, DislikeButton} from './Button';
+import {CommentHead, Comment} from './Comment';
+import {ButtonsGroup, Placeholder} from './ButtonsGroup';
 
 function App() {
   return (
