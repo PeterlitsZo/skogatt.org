@@ -131,9 +131,9 @@ class Warning extends React.Component {
     if (props.show) {
       return (
         <Info>
-          <Loading3s className="icon" key={props.refreshKey} />
-          <span className="text">{props.msg}</span>
-          <span className="phoneText">{props.phoneMsg}</span>
+          <Loading3s key={props.refreshKey} />
+          <Info forDevice>{props.msg}</Info>
+          <Info forPhone>{props.phoneMsg}</Info>
         </Info>
       );
     } else {

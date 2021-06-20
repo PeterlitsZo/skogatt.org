@@ -16,7 +16,7 @@ import {ButtonsGroup, Tag, Placeholder, Info} from './ButtonsGroup';
 import {Button} from './Button';
 
 import {forPhone, forDevice} from './ButtonsGroup.module.scss';
-import {item, text, list, head, tail, current as currentClass} from './Comment.module.scss';
+import {item, text, list, head, tail, current as currentClass, input, comment} from './Comment.module.scss';
 
 // The head of comments. It is a `Tag` in `ButtonsGroup`.
 export class CommentHead extends React.Component {
@@ -154,7 +154,7 @@ class PaperNavJump extends React.Component {
     return (
       <from className={forDevice} onSubmit={this.handleSubmit}>
         <ButtonsGroup>
-          <input type="text" name="page"
+          <input type="text" name="page" className={input}
             onChange={this.handleChange}
             value={this.state.pageNumber}
             placeholder="Page"
@@ -326,7 +326,7 @@ export class Comment extends React.Component {
 
   render() {
     return (
-      <div className="comment">
+      <div className={comment}>
         <Textbox submit={this.submit} refresh={() => this.refresh(1)} />
         <CommentsList
           handle={this.refresh}

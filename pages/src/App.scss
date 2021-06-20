@@ -1,115 +1,5 @@
 @import "variables";
 
-html {
-    background-color: $background-color;
-}
-
-.nav {
-    padding: 0 $button-padding;
-    margin: 0 0 $button-padding 0;
-    font-size: $help-font-height;
-
-    .current {
-        color: $important-color;
-        font-weight: bold;
-    }
-
-    .icon {
-        height: $help-font-height;
-    }
-}
-
-.comment {
-    display: flex;
-    flex-direction: column;
-    margin: $button-padding 0 0 0;
-    background: $dark-background-color;
-    padding: $button-padding;
-
-    .list {
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        padding: $button-padding 0 $button-padding 0;
-
-        &::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: $line-height;
-            background: $light-background-color;
-        }
-
-        .item {
-            padding: $button-padding;
-
-            .head {
-                color: $text-second-color;
-                font-size: $help-font-height;
-            }
-
-            .text {
-                color: $text-first-color;
-                font-size: $text-font-height;
-
-                p {
-                    margin: 0 0 $button-padding/2 0;
-
-                    &:last-child {
-                        margin: 0;
-                    }
-                }
-            }
-
-            &:hover {
-                background: $light-background-color;
-            }
-        }
-    }
-}
-
-.textbox {
-    width: 100%;
-
-    .title, .bottom {
-        position: relative;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        font-size: $help-font-height;
-        background: $dark-background-color;
-        padding: $button-padding;
-        color: $text-second-color;
-
-        .icon {
-            height: $help-font-height;
-        }
-    }
-
-    .textarea {
-        position: relative;
-        box-sizing: border-box;
-        z-index: 1;
-        height: 100px;
-        width: calc(100% - 2 * #{$button-padding});
-        padding: $button-padding;
-        margin: 0 $button-padding;
-        background: $light-background-color;
-        border: none;
-        color: $text-first-color;
-        font-size: $text-font-height;
-        resize: none;
-        border-radius: 0px !important;
-        outline: none;
-    
-        &:focus {
-            box-shadow: 0 0 0 $shadow-length $shadow-color;
-        }
-    }
-}
-
 .app {
     color: $text-first-color;
     // 0.7 * $phone-width + 0.3 * width - 2 * padding => auto increasing when
@@ -183,60 +73,13 @@ html {
     }
 }
 
-input {
-    position: relative;
-    box-sizing: border-box;
-    z-index: 1px;
-    width: 64px; // TODO
-    padding: $button-padding;
-    margin: 0;
-    color: $text-first-color;
-    font-size: $help-font-height;
-    background: $light-background-color;
-    border: none;
-    border-radius: 0px !important;
-    outline: none;
-
-    &:focus {
-        box-shadow: 0 0 0 $shadow-length $shadow-color;
-    }
-}
-
-label {
-    input {
-        margin: 0 0 0 $button-padding;
-    }
-}
-
-/* for phone with little width */
+// for phone with little width
 @media screen and (max-width: $phone-width) {
     .app {
         width: auto !important;
-        margin: $page-padding !important;
-    }
-
-    .button, .tab, .dark-button, .info{
-        .text {
-            display: none !important;
-        }
-
-        .phoneText {
-            display: static !important;
-        }
-    }
-
-    .notForPhone {
-        display: none !important;
+        padding: $page-padding !important;
     }
 }
-
-// For other devides
-@media screen and (min-width: $phone-width + 0.1px) {
-    .forPhone {
-        display: none !important;
-    }
-}
-
 
 @keyframes flash {
   from {
