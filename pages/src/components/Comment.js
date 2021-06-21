@@ -12,32 +12,34 @@ import {ReactComponent as After} from '../svg/chevron-right.svg';
 import {ReactComponent as Tail} from '../svg/chevrons-right.svg';
 
 import {Textbox} from './Textbox';
+import {ButtonsGroup, Tag, Placeholder, Info} from './ButtonsGroup';
+import {Button} from './Button';
 
+import {forPhone, forDevice} from './ButtonsGroup.module.scss';
+import {item, text, list, head, tail, current as currentClass, input, comment} from './Comment.module.scss';
+
+// The head of comments. It is a `Tag` in `ButtonsGroup`.
 export class CommentHead extends React.Component {
   render() {
     return (
-      <div className="tab">
-        <CommentIcon className="icon"/>
-        <span className="text">Comments</span>
-        <div className="tabline"/>
-      </div>
+      <Tag withLine>
+        <CommentIcon />
+        <span>Comments</span>
+      </Tag>
     );
   }
 }
 
+// The element of comments' list.
 class CommentsItem extends React.Component {
   constructor(props) {
     super(props);
-    const needFold = this.props.content.content.length > 250;
-    console.log(
-        this.props.content,
-        this.props.content.content.length,
-        needFold,
-    );
+    const fold = this.props.content.content.length > 250;
 
-    this.state = {
-      fold: needFold,
-    };
+    // `fold`: boolean type:
+    //  - true: this `CommentsItem` is folded (with a button to `unfold`).
+    //  - false: unfolded (with a button to `fold`).
+    this.state = { fold };
 
     this.changeFoldState = this.changeFoldState.bind(this);
   }
@@ -54,46 +56,36 @@ class CommentsItem extends React.Component {
     const needFold = content.content.length > 250;
 
     let fold_button = null;
-    let fold_buttons = null;
+    let contentText = content.content;
 
     // If need fold content, then fold content and and `Fold/Unfold` button.
     if (needFold) {
       fold_button = (
-        <button
-          className="dark-button"
-          onClick={ this.changeFoldState }
-        >
+        <Button dark clickFunction={ this.changeFoldState }>
           { this.state.fold ? 'Unfold' : 'Fold' }
-        </button>
+        </Button>
       );
-    }
-    if (needFold) {
-      fold_buttons = (
-        <div className="buttons">
-          { fold_button }
-        </div>
-      );
+      if (this.state.fold)
+        contentText = contentText.substring(0, 250) + '...';
     }
 
-    let text = content.content;
-    if (this.state.fold) {
-      text = text.substring(0, 250) + '...';
-    }
-    text = text.split('\n').map((i, key) => {
+    // split text with newline token(`\n`), and then render those to `<p>`
+    // elements.
+    contentText = contentText.split('\n').map((i, key) => {
       return <p key={key}>{i}</p>
     });
 
     return (
-      <div className="item">
-        <div className="head buttons">
-          { content.ip }
-          <span> - </span>
-          { moment(content.datetime).fromNow() }
-          <div className="none" />
-          { needFold && !this.state.fold ? fold_button : null }
-        </div>
-        <div className="text">{ text }</div>
-        { fold_buttons }
+      <div className={item}>
+        <ButtonsGroup>
+          <Info>{ content.ip }</Info>
+          <Info> - </Info>
+          <Info>{ moment(content.datetime).fromNow() }</Info>
+          <Placeholder />
+          { fold_button }
+        </ButtonsGroup>
+        <div className={text}>{ contentText }</div>
+        <ButtonsGroup>{ fold_button }</ButtonsGroup>
       </div>
     );
   }
@@ -108,20 +100,70 @@ class CommentsList extends React.Component {
         return <CommentsItem content={data} key={ data.id } />
       });
 
-    const commentsListNav = (this.props.comments.length > 1
+    const commentsListNav = className => (
+      this.props.comments.length > 1
       ? <PaperNav
           current={this.props.comments.current}
           length={this.props.comments.length}
           handle={this.props.handle}
+          className={className}
         />
       : null);
 
+    console.log(head, tail);
     return (
-      <div className="list">
-        { commentsListNav }
+      <div className={list}>
+        { commentsListNav(head) }
         <div>{ commentsList }</div>
-        { commentsListNav }
+        { commentsListNav(tail) }
       </div>
+    );
+  }
+}
+
+class PaperNavJump extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.handle = props.handle;
+
+    this.state = { pageNumber: '' };
+
+    this.changePage = this.changePage.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  changePage() {
+    this.handle(this.state.pageNumber);
+  }
+
+  handleChange(event) {
+    this.setState({
+      pageNumber: event.target.value,
+    });
+  }
+
+  handleSubmit(event) {
+    this.props.handle(this.state.pageNumber);
+    this.setState({ pageNumber: '' });
+    event.preventDefault();
+  }
+
+  render() {
+    return (
+      <from className={forDevice} onSubmit={this.handleSubmit}>
+        <ButtonsGroup>
+          <input type="text" name="page" className={input}
+            onChange={this.handleChange}
+            value={this.state.pageNumber}
+            placeholder="Page"
+          />
+          <Button dark clickFunction={this.changePage}>
+            <To /><span>Jump</span>
+          </Button>
+        </ButtonsGroup>
+      </from>
     );
   }
 }
@@ -141,100 +183,96 @@ export class PaperNav extends React.Component {
     const current = this.props.current;
     const length = this.props.length;
 
+    function mkHandle(paperNum) {
+      return () => handle(paperNum);
+    }
+
     // The button that will jump to `paperNum` paper by `handle` function
     function PaperNavButton(props) {
+      const forPhone = props.forPhone;
+      const forDevice = props.forDevice;
+
       return (
-        <div
-          className={'dark-button' + (props.forPhone ? '' : ' notForPhone')}
-          onClick={() => handle(props.paperNum)}
+        <Button dark forPhone={forPhone} forDevice={forDevice}
+          clickFunction={mkHandle(props.paperNum)}
         >
           {props.paperNum}
-        </div>
+        </Button>
       );
     }
 
     // Display the buttons before `current` button
     if (this.props.current - 2 > 2) {
       result.push(
-        <PaperNavButton paperNum={1} forPhone={false}/>,
-        <Dots className="icon notForPhone" />,
-        <PaperNavButton paperNum={current - 2} forPhone={false}/>,
-        <PaperNavButton paperNum={current - 1} forPhone={false}/>,
+        <PaperNavButton paperNum={1} forDevice />,
+        <Dots className={forDevice} />,
+        <PaperNavButton paperNum={current - 2} forDevice />,
+        <PaperNavButton paperNum={current - 1} forDevice />,
       );
     } else {
       for (let i = 1; i < current; i ++)
-        result.push(<PaperNavButton paperNum={i} forPhone={false}/>);
+        result.push(<PaperNavButton paperNum={i} forDevice />);
+    }
+    if (current > 2) {
+      result.push(
+        <Button dark forPhone clickFunction={mkHandle(1)}>
+          <Head />
+        </Button>
+      );
     }
     if (current > 1) {
-      if (current > 2) {
-        result.push(<div className='dark-button forPhone' onClick={() => handle(1)}>
-          <Head className='icon' />
-        </div>);
-      }
-      result.push(<div className='dark-button forPhone' onClick={() => handle(current - 1)}>
-        <Before className='icon' />
-      </div>);
+      result.push(
+        <Button dark forPhone clickFunction={mkHandle(current - 1)}>
+          <Before />
+        </Button>
+      );
     }
 
     // Display the `current` button
     result.push(
-      <span className="current">{current}</span>,
-      <span className="forPhone">/ {length}</span>,
+      <span className={currentClass}>{current}</span>,
+      <Info forPhone>/ {length}</Info>,
     );
 
     // Display the buttons after `current` button
     if (this.props.current + 2 < this.props.length - 1) {
       result.push(
-        <PaperNavButton paperNum={current + 1} forPhone={false}/>,
-        <PaperNavButton paperNum={current + 2} forPhone={false}/>,
-        <Dots className="icon notForPhone" />,
-        <PaperNavButton paperNum={length} forPhone={false}/>,
+        <PaperNavButton paperNum={current + 1} forDevice />,
+        <PaperNavButton paperNum={current + 2} forDevice />,
+        <Dots className={forDevice} />,
+        <PaperNavButton paperNum={length} forDevice />,
       );
     } else {
       for (let i = this.props.current + 1; i <= this.props.length; i ++)
-        result.push(<PaperNavButton paperNum={i} forPhone={false}/>);
+        result.push(<PaperNavButton paperNum={i} forDevice />);
     }
     if (current < length) {
-      result.push(<div className='dark-button forPhone' onClick={() => handle(current + 1)}>
-        <After className="icon"/>
-      </div>);
-      if (current < length - 1) {
-        result.push(<div className='dark-button forPhone' onClick={() => handle(length)}>
-          <Tail className='icon' />
-        </div>);
-      }
+      result.push(
+        <Button dark forPhone clickFunction={mkHandle(current + 1)}>
+          <After />
+        </Button>
+      );
+    }
+    if (current < length - 1) {
+      result.push(
+        <Button dark forPhone clickFunction={mkHandle(length)}>
+          <Tail />
+        </Button>
+      );
     }
 
     // Display the blank between buttons and `Jump` component
-    result.push(<div className="none" />);
+    result.push(<Placeholder />);
 
     // Display the `Jump` component
-    result.push(
-      <form className="buttons notForPhone" onSubmit={(event) => {
-        this.props.handle(this.state.pageNumber);
-        this.setState({ pageNumber: '' });
-        console.log("fuck 2", this.state.pageNumber);
-        event.preventDefault();
-      }}>
-        <label>
-          <input type="text" name="page" onChange={(event) => {
-            this.setState({ pageNumber: event.target.value });
-            console.log("fuck 1", event.target.value);
-          }} value={this.state.pageNumber} placeholder="Page" />
-        </label>
-        <button className="dark-button">
-          <To className="icon" />
-          Jump
-        </button>
-      </form>
-    );
+    result.push(<PaperNavJump handle={handle}/>);
 
     // Render the buttons
     return (
-      <div className="buttons nav">
-        <Pages className="icon" />
+      <ButtonsGroup className={this.props.className}>
+        <Pages />
         {result.length ? result : null}
-      </div>
+      </ButtonsGroup>
     );
   }
 }
@@ -288,7 +326,7 @@ export class Comment extends React.Component {
 
   render() {
     return (
-      <div className="comment">
+      <div className={comment}>
         <Textbox submit={this.submit} refresh={() => this.refresh(1)} />
         <CommentsList
           handle={this.refresh}
@@ -298,4 +336,3 @@ export class Comment extends React.Component {
     );
   }
 }
-

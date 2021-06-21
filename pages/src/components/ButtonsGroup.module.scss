@@ -1,0 +1,93 @@
+@import "../variables";
+
+.buttonsGroup {
+    display: flex;
+    align-items: center;
+    gap: $button-padding;
+
+    // Placeholder: fill the remaining space
+    .placeholder {
+        flex: auto;
+    }
+
+    %text {
+        display: inline-flex;
+        align-items: center;
+
+        font-size: $help-font-height;
+        color: $text-second-color;
+
+        svg {
+            height: $help-font-height;
+        }
+    }
+
+    // Infomation: some text
+    .info {
+        @extend %text;
+
+        padding: 0;
+    }
+
+    // Tag: tag-like infomation
+    .tag {
+        @extend %text;
+
+        position: relative;
+        align-self: stretch;
+
+        padding: $button-padding;
+
+        background: $dark-background-color;
+
+        .tagline {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: -$button-padding;
+            height: $button-padding;
+            background: $dark-background-color;
+
+            @mixin solidLine() {
+                content: "";
+
+                position: absolute;
+
+                left: $button-padding;
+                right: $button-padding;
+                height: $line-height;
+                background: $light-background-color;
+            }
+
+            &::before {
+                @include solidLine;
+                top: 0;
+
+            }
+
+            &::after {
+                @include solidLine;
+                bottom: 0;
+            }
+        }
+    }
+
+    // Svg icon
+    svg {
+        height: $help-font-height;
+    }
+}
+
+// for phone with little width
+@media screen and (max-width: $phone-width) {
+    .forDevice{
+        display: none !important;
+    }
+}
+
+// For other devides
+@media screen and (min-width: $phone-width + 0.1px) {
+    .forPhone {
+        display: none !important;
+    }
+}

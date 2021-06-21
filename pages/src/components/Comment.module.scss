@@ -1,0 +1,80 @@
+@import "../variables";
+
+.list {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 2*$button-padding 0 0 0;
+
+    &::before {
+        content: "";
+        position: absolute;
+        top: $button-padding;
+        left: 0;
+        right: 0;
+        height: $line-height;
+        background: $light-background-color;
+    }
+
+    .head {
+        margin: 0 0 $button-padding 0;
+    }
+
+    .tail {
+        margin: $button-padding 0 0 0;
+    }
+
+    .item {
+        padding: $button-padding 0;
+
+        .text {
+            font-size: $text-font-height;
+    
+            color: $text-first-color;
+    
+            p {
+                margin: 0 0 $button-padding/2 0;
+    
+                &:last-child {
+                    margin: 0;
+                }
+            }
+        }
+    
+        &:hover {
+            background: $background-color;
+        }
+    }
+}
+
+.current {
+    color: $important-color;
+    font-weight: bold;
+}
+
+.input {
+    position: relative;
+    box-sizing: border-box;
+    z-index: 1px;
+    width: 64px; // TODO
+    padding: $button-padding;
+    margin: 0;
+    color: $text-first-color;
+    font-size: $help-font-height;
+    background: $light-background-color;
+    border: none;
+    border-radius: 0px !important;
+    outline: none;
+
+    &:focus {
+        box-shadow: 0 0 0 $shadow-length $shadow-color;
+    }
+}
+
+.comment {
+    display: flex;
+    flex-direction: column;
+    margin: $button-padding 0 0 0;
+    background: $dark-background-color;
+    padding: $button-padding;
+}

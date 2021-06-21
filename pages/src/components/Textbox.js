@@ -5,6 +5,11 @@ import {ReactComponent as Submit} from '../svg/send.svg';
 import {ReactComponent as Loading} from '../svg/loader.svg';
 import {ReactComponent as Loading3s} from '../svg/loading-3s.svg';
 
+import {Button} from './Button';
+import {ButtonsGroup, Info, Placeholder} from './ButtonsGroup';
+
+import {textbox} from './Textbox.module.scss';
+
 export class Textbox extends React.Component {
   constructor(props) {
     super(props);
@@ -16,7 +21,6 @@ export class Textbox extends React.Component {
     };
 
     this.textArea = React.createRef();
-    this.form = React.createRef();
 
     this.focusTextArea = this.focusTextArea.bind(this);
     this.handleChange = this.handleChange.bind(this);
@@ -27,20 +31,26 @@ export class Textbox extends React.Component {
 
     this.before_info_timeout_handle = null;
   }
+
   focusTextArea() {
     this.textArea.current.focus();
   }
+
   handleChange(event) {
     this.setState({
       text: event.target.value
     });
   }
+
   async handleSubmit() {
     this.setState({state: 'waiting'});
+
     const flag = await this.submit(this.state.text);
+    // if success, then set text to empty to wait for next operation.
     if (flag) {
       this.setState({text: ''});
       this.refresh();
+    // else show warning
     } else {
       this.setState({error_log: true});
       if (this.before_info_timeout_handle) {
@@ -54,56 +64,80 @@ export class Textbox extends React.Component {
         this.setState({error_log: false});
       }, 3000);
     }
+
     this.setState({state: 'OK'});
   }
+
   render() {
+    // Title of the textarea.
+    let title = (
+      <ButtonsGroup onClick={this.focusTextArea}>
+        <Info><Text />Text for submit:</Info>
+      </ButtonsGroup>
+    );
+
+    // Main part of textarea.
+    let textarea = (
+      <textarea
+        ref={this.textArea}
+        className="textarea"
+        value={this.state.text}
+        onChange={this.handleChange}
+      />
+    );
+
+    // Warning. Show if user's operation is too frequent.
+    let warning = (
+      <Warning
+        msg={"Warning! The operation is too frequent"}
+        phoneMsg={"Too frequent"}
+        show={this.state.error_log}
+        refreshKey={this.state.warning_refresh_key}
+      />
+    );
+
+    // Submit button
+    let submitButtonIcon;
+    if (this.state.state == 'OK') {
+      submitButtonIcon = <Submit />;
+    } else {
+      submitButtonIcon = <Loading />;
+    }
+    let submitButton = (
+      <Button dark clickFunction={this.handleSubmit}>
+        {submitButtonIcon}
+        <span className="text">Submit</span>
+      </Button>
+    );
+
     return (
-      <div
-        className="textbox"
-        ref={this.form}
-      >
-        <div className="title" onClick={this.focusTextArea}>
-          <Text className="icon" />
-          Text for submit:
-        </div>
-        <textarea
-          ref={this.textArea}
-          className="textarea"
-          value={this.state.text}
-          onChange={this.handleChange}
-        />
-        <div className="buttons bottom">
-          <div className="none"/>
-          <Warning
-            msg={"Warning! The operation is too frequent"}
-            phoneMsg={"Too frequent"}
-            show={this.state.error_log}
-            refreshKey={this.state.warning_refresh_key}
-          />
-          <div className="dark-button" onClick={this.handleSubmit}>
-            {
-              this.state.state == 'OK'
-                ? <Submit className="icon" />
-                : <Loading className="icon"/>
-            }
-            <span className="text">Submit</span>
-          </div>
-        </div>
+      <div className={textbox}>
+        {title}
+        {textarea}
+        <ButtonsGroup>
+          <Placeholder />
+          {warning}
+          {submitButton}
+        </ButtonsGroup>
       </div>
     );
   }
 }
 
-function Warning(props) {
-  if (props.show) {
-    return (
-      <div className="info">
-        <Loading3s className="icon" key={props.refreshKey} />
-        <span className="text">{props.msg}</span>
-        <span className="phoneText">{props.phoneMsg}</span>
-      </div>
-    );
-  } else {
-    return null;
+// `Waring` component used by `Textbox`.
+class Warning extends React.Component {
+  render() {
+    let props = this.props
+    if (props.show) {
+      return (
+        <Info>
+          <Loading3s key={props.refreshKey} />
+          <Info forDevice>{props.msg}</Info>
+          <Info forPhone>{props.phoneMsg}</Info>
+        </Info>
+      );
+    } else {
+      return null;
+    }
   }
 }
