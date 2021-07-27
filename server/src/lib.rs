@@ -75,7 +75,6 @@ async fn handle(req: Request<Body>,
                     None => 0
                 };
 
-
                 *response.body_mut() = Body::from(comments::get_comments(conn.clone(), page));
             },
             &Method::POST => {
@@ -146,4 +145,14 @@ pub async fn run(data: Arc<Mutex<like::Data>>, conn: Arc<Mutex<Connection>>)
         })).await?;
 
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_init() {
+        assert!(2 + 2 == 4);
+    }
 }
