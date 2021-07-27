@@ -1,18 +1,14 @@
 mod home;
 mod database;
 
-use std::collections::HashMap;
 use std::convert::Infallible;
 use std::fs::File;
 use std::io::Write;
 use std::net::SocketAddr;
-use std::str::from_utf8;
 use std::error;
 use std::sync::{Arc, Mutex};
 
-use chrono::Utc;
 use hyper::{Body, Response, Server, Request, Method, StatusCode};
-use hyper::body::to_bytes;
 use hyper::service::{make_service_fn, service_fn};
 use log::info;
 use rusqlite::{Connection, Result};
@@ -42,9 +38,7 @@ async fn handle(req: Request<Body>,
                 like::add_like(data.clone());
                 write = true;
             },
-            _ => {
-                *response.status_mut() = StatusCode::NOT_FOUND;
-            },
+            _ => { *response.status_mut() = StatusCode::NOT_FOUND; },
         },
         (method, "/api/v1/home/dislike") => match method {
             &Method::GET => {
@@ -54,43 +48,10 @@ async fn handle(req: Request<Body>,
                 like::add_dislike(data.clone());
                 write = true;
             },
-            _ => {
-                *response.status_mut() = StatusCode::NOT_FOUND;
-            },
+            _ => { *response.status_mut() = StatusCode::NOT_FOUND; },
         }
-        (method, "/api/v1/home/comments") => match method {
-            &Method::GET => {
-                // Parse URL's query to hashmap.
-                let params = req.uri().query();
-                let params: HashMap<String, String> = params
-                    .map(|v| {
-                        url::form_urlencoded::parse(v.as_bytes())
-                            .into_owned()
-                            .collect()
-                    })
-                    .unwrap_or_else(HashMap::new);
-                info!("  Get argument of `/api/v1/home/comments`: {:?}", params);
-                let page = match params.get("page") {
-                    Some(number) => number.parse::<i64>().unwrap_or(1) - 1,
-                    None => 0
-                };
-
-                *response.body_mut() = Body::from(comments::get_comments(conn.clone(), page));
-            },
-            &Method::POST => {
-                let ip = req.headers()["x-forwarded-for"].to_str().unwrap()
-                    .to_string();
-                let text = to_bytes(req.into_body()).await.unwrap();
-                let text = from_utf8(&text).unwrap();
-                comments::add_comment(conn.clone(), ip, Utc::now(), text, &mut response);
-            },
-            _ => {
-                *response.status_mut() = StatusCode::NOT_FOUND;
-            },
-        },
-        _ => {
-            *response.status_mut() = StatusCode::NOT_FOUND;
-        },
+        (_, "/api/v1/home/comments") => { return comments::handle(req, conn).await; },
+        _ => { *response.status_mut() = StatusCode::NOT_FOUND; },
     };
    
     // write => write data to the json file to save
@@ -145,14 +106,4 @@ pub async fn run(data: Arc<Mutex<like::Data>>, conn: Arc<Mutex<Connection>>)
         })).await?;
 
     Ok(())
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn test_init() {
-        assert!(2 + 2 == 4);
-    }
 }

@@ -53,12 +53,16 @@ pub fn init_sqlite(conn: Arc<Mutex<Connection>>) {
 }
 
 #[cfg(test)]
-mod tests {
-    use std::path;
-    use std::fs;
+pub mod tests {
     use super::*;
 
-    fn remove_data_json_file() {
+    use std::path;
+    use std::fs;
+    use once_cell::sync::Lazy;
+
+    pub static DB_FILE_RESOURCE: Lazy<Mutex<()>> = Lazy::new(Mutex::default);
+
+    pub fn remove_data_json_file() {
         if path::Path::new(JSON_FILE_NAME).exists() == true {
             fs::remove_file(JSON_FILE_NAME).unwrap_or_else(|why| {
                 println!("! {:?}", why);
@@ -66,7 +70,7 @@ mod tests {
         }
     }
 
-    fn remove_sqlite_file() {
+    pub fn remove_sqlite_file() {
         if path::Path::new(DB_FILE_NAME).exists() == true {
             fs::remove_file(DB_FILE_NAME).unwrap_or_else(|why| {
                 println!("! {:?}", why);
@@ -100,6 +104,8 @@ mod tests {
 
     #[test]
     fn test_init_sqlite() {
+        let _shared = DB_FILE_RESOURCE.lock();
+
         // remove and then init(create) a db file.
         remove_sqlite_file();
         assert_eq!(path::Path::new(DB_FILE_NAME).exists(), false);
