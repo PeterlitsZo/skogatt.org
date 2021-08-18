@@ -7,7 +7,7 @@ use rusqlite::{params, Connection};
 use serde::{Deserialize, Serialize};
 use log::info;
 use serde_json::to_string;
-use hyper::{Body, body, Method, Response, Request, StatusCode};
+use hyper::{Body, Method, Response, Request, StatusCode};
 use hyper::body::to_bytes;
 
 #[derive(Serialize, Deserialize, Debug)]
@@ -146,15 +146,14 @@ async fn post(req: Request<Body>, conn: Arc<Mutex<Connection>>) -> Response<Body
 }
 
 pub async fn handle(req: Request<Body>, conn: Arc<Mutex<Connection>>) -> Response<Body> {
+    let not_found = Response::builder()
+        .status(StatusCode::NOT_FOUND)
+        .body(Body::empty())
+        .unwrap();
     return match req.method() {
         &Method::GET => get(req, conn),
         &Method::POST => post(req, conn).await,
-        _ => {
-            Response::builder()
-                .status(StatusCode::NOT_FOUND)
-                .body(Body::empty())
-                .unwrap()
-        },
+        _ => not_found,
     }
 }
 
@@ -182,7 +181,7 @@ mod tests {
     }
 
     async fn hashmap_body(body: Body) -> HashMap<String, String> {
-        let body_vec_u8 = body::to_bytes(body).await
+        let body_vec_u8 = hyper::body::to_bytes(body).await
             .unwrap().to_vec();
         let body_json = String::from_utf8(body_vec_u8).unwrap();
         return serde_json::from_str(&body_json).unwrap();
@@ -195,9 +194,10 @@ mod tests {
         database::tests::remove_sqlite_file();
         let conn = init();
         let response = handle(make_get_request(), conn.clone()).await;
+        let response_body = response.into_body();
 
         // in the new database, the length of it is 0
-        assert_eq!(hashmap_body(response.into_body()).await.get(&"length".to_string()).unwrap(), "0");
+        assert_eq!(hashmap_body(response_body).await.get(&"length".to_string()).unwrap(), "0");
         let mut response = Response::new(Body::empty());
         add_comment(conn.clone(), "127.0.0.1".to_string(), Utc::now(), "baka", &mut response, false); 
         // after post a comments, the length is 1 and we can get the comments.
@@ -256,6 +256,8 @@ mod tests {
 
     #[actix_rt::test]
     async fn test_unkown() {
+        let _shared = database::tests::DB_FILE_RESOURCE.lock();
+
         let conn = init();
         let put_request = Request::builder()
             .method(Method::PUT)

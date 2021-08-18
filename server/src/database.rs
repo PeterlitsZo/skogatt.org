@@ -61,6 +61,7 @@ pub mod tests {
     use once_cell::sync::Lazy;
 
     pub static DB_FILE_RESOURCE: Lazy<Mutex<()>> = Lazy::new(Mutex::default);
+    pub static JSON_FILE_RESOURCE: Lazy<Mutex<()>> = Lazy::new(Mutex::default);
 
     pub fn remove_data_json_file() {
         if path::Path::new(JSON_FILE_NAME).exists() == true {
@@ -80,6 +81,8 @@ pub mod tests {
 
     #[test]
     fn test_init_data_json_file() {
+        let _shared = JSON_FILE_RESOURCE.lock();
+
         // remove and then init(create) a json file.
         remove_data_json_file();
         assert_eq!(path::Path::new(JSON_FILE_NAME).exists(), false);

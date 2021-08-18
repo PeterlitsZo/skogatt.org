@@ -2,13 +2,11 @@ mod home;
 mod database;
 
 use std::convert::Infallible;
-use std::fs::File;
-use std::io::Write;
 use std::net::SocketAddr;
 use std::error;
 use std::sync::{Arc, Mutex};
 
-use hyper::{Body, Response, Server, Request, Method, StatusCode};
+use hyper::{Body, Response, Server, Request, StatusCode};
 use hyper::service::{make_service_fn, service_fn};
 use log::info;
 use rusqlite::{Connection, Result};
@@ -25,45 +23,18 @@ async fn handle(req: Request<Body>,
                 conn: Arc<Mutex<Connection>>)
         -> Response<Body>
 {
-    let mut response = Response::new(Body::empty());
-    let mut write = false;
+    let not_found = Response::builder()
+        .status(StatusCode::NOT_FOUND)
+        .body(Body::empty())
+        .unwrap();
 
     info!("{} {}", req.method(), req.uri());
-    match (req.method(), req.uri().path()) {
-        (method, "/api/v1/home/like") => match method {
-            &Method::GET => {
-                *response.body_mut() = Body::from(like::get_like_json(data.clone()));
-            },
-            &Method::POST => {
-                like::add_like(data.clone());
-                write = true;
-            },
-            _ => { *response.status_mut() = StatusCode::NOT_FOUND; },
-        },
-        (method, "/api/v1/home/dislike") => match method {
-            &Method::GET => {
-                *response.body_mut() = Body::from(like::get_dislike_json(data.clone()));
-            },
-            &Method::POST => {
-                like::add_dislike(data.clone());
-                write = true;
-            },
-            _ => { *response.status_mut() = StatusCode::NOT_FOUND; },
-        }
-        (_, "/api/v1/home/comments") => { return comments::handle(req, conn).await; },
-        _ => { *response.status_mut() = StatusCode::NOT_FOUND; },
-    };
-   
-    // write => write data to the json file to save
-    if write {
-        let json_text = serde_json::to_string(&*data.lock().unwrap()).unwrap();
-        info!("  write to file for saving");
-        File::create(JSON_FILE_NAME).unwrap()
-            .write(json_text.as_bytes()).unwrap();
+    match req.uri().path() {
+        "/api/v1/home/like" => like::handle(req, data.clone()).await,
+        "/api/v1/home/dislike" => like::handle(req, data.clone()).await,
+        "/api/v1/home/comments" => comments::handle(req, conn).await,
+        _ => not_found,
     }
-
-    info!("  Return response");
-    response
 }
 
 pub async fn init()
