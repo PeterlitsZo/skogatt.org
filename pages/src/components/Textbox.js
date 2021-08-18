@@ -98,7 +98,7 @@ export class Textbox extends React.Component {
 
     // Submit button
     let submitButtonIcon;
-    if (this.state.state == 'OK') {
+    if (this.state.state === 'OK') {
       submitButtonIcon = <Submit />;
     } else {
       submitButtonIcon = <Loading />;

@@ -9,12 +9,21 @@
 
     font-size: $help-font-height;
     color: $text-second-color;
+    border-radius: $button-radius;
 
     cursor: pointer;
     user-select: none;
+    background: $background-color;
+
+    outline: none;
 
     svg {
         height: $help-font-height;
+    }
+
+    &:focus-visible {
+        z-index: 1;
+        box-shadow: 0 0 0 $shadow-length $shadow-color;
     }
 }
 
@@ -22,9 +31,12 @@
     @extend %buttonBasic;
 
     border: solid 1px $dark-background-color;
-    background: $background-color;
 
-    &:hover {
+    &.noBorder {
+        border: none;
+    }
+
+    &:not([disabled]):hover {
         background-color: $dark-background-color;
         color: $text-first-color;
     }
@@ -36,7 +48,11 @@
     border: solid 1px $light-background-color;
     background: $dark-background-color;
 
-    &:hover {
+    &.noBorder {
+        border: none;
+    }
+
+    &:not([disabled]):hover {
         background-color: $light-background-color;
         color: $text-first-color;
     }

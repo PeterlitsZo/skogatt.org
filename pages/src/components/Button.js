@@ -6,16 +6,25 @@ import {ReactComponent as Like} from '../svg/thumbs-up.svg';
 import {ReactComponent as IDontKnow} from '../svg/more-horizontal.svg';
 
 import {forPhone, forDevice} from './ButtonsGroup.module.scss';
-import {button, darkButton} from './Button.module.scss';
+import {button, darkButton, noBorder} from './Button.module.scss';
 
 export class Button extends React.Component {
   render() {
     let buttonClass = this.props.dark ? darkButton : button;
+    if (this.props.className) {
+      buttonClass += ' ' + this.props.className;
+    }
     if(this.props.forPhone) {
       buttonClass += ' ' + forPhone;
     }
     if(this.props.forDevice) {
       buttonClass += ' ' + forDevice;
+    }
+    if(this.props.noBorder) {
+      buttonClass += ' ' + noBorder;
+    }
+    if(this.props.disable) {
+      console.log("fuck");
     }
 
     let children = this.props.children;
@@ -25,6 +34,7 @@ export class Button extends React.Component {
       <button
         className={buttonClass}
         onClick={clickFunction}
+        disabled={this.props.disable}
       >
         {children}
       </button>

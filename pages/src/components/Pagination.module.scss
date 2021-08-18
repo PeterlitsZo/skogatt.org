@@ -1,0 +1,45 @@
+@import "../variables";
+
+.from {
+    display: inline-flex;
+}
+
+.input {
+    position: relative;
+    box-sizing: border-box;
+    width: 64px; // TODO(update: todo what?)
+    padding: $button-padding;
+    margin: 0;
+    color: $text-first-color;
+    font-size: $help-font-height;
+    background: $light-background-color;
+    border: none;
+    border-radius: 4px 0px 0px 4px;
+    outline: none;
+
+    &:focus {
+        z-index: 1;
+        box-shadow: 0 0 0 $shadow-length $shadow-color;
+    }
+}
+
+.paginationButton  {
+    display: inline-block;
+    min-width: calc(#{2 * $button-padding} + #{$text-font-height});
+    height: calc(#{2 * $button-padding} + #{$text-font-height});
+
+    &.current {
+        color: $important-color;
+        font-weight: bold;
+    }
+
+    svg {
+        width: $text-font-height;
+        height: $text-font-height;
+    }
+
+    &.jump {
+        border-radius: 0px 4px 4px 0px;
+        background: $light-background-color;
+    }
+}

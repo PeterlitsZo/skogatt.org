@@ -52,25 +52,6 @@
     font-weight: bold;
 }
 
-.input {
-    position: relative;
-    box-sizing: border-box;
-    z-index: 1px;
-    width: 64px; // TODO
-    padding: $button-padding;
-    margin: 0;
-    color: $text-first-color;
-    font-size: $help-font-height;
-    background: $light-background-color;
-    border: none;
-    border-radius: 0px !important;
-    outline: none;
-
-    &:focus {
-        box-shadow: 0 0 0 $shadow-length $shadow-color;
-    }
-}
-
 .comment {
     display: flex;
     flex-direction: column;

@@ -14,8 +14,9 @@ import {ReactComponent as Tail} from '../svg/chevrons-right.svg';
 import {Textbox} from './Textbox';
 import {ButtonsGroup, Tag, Placeholder, Info} from './ButtonsGroup';
 import {Button} from './Button';
+import {Pagination, PaginationJump} from './Pagination';
 
-import {forPhone, forDevice} from './ButtonsGroup.module.scss';
+import {forDevice} from './ButtonsGroup.module.scss';
 import {item, text, list, head, tail, current as currentClass, input, comment} from './Comment.module.scss';
 
 // The head of comments. It is a `Tag` in `ButtonsGroup`.
@@ -95,14 +96,16 @@ class CommentsList extends React.Component {
   render() {
     console.log(this.props.comments);
 
+    // main part - comments
     const commentsList = this.props.comments.list
       .map((data) => {
         return <CommentsItem content={data} key={ data.id } />
       });
 
-    const commentsListNav = className => (
+    // pagination of the comments
+    const commentsListPagination = className => (
       this.props.comments.length > 1
-      ? <PaperNav
+      ? <Pagination
           current={this.props.comments.current}
           length={this.props.comments.length}
           handle={this.props.handle}
@@ -110,169 +113,12 @@ class CommentsList extends React.Component {
         />
       : null);
 
-    console.log(head, tail);
     return (
       <div className={list}>
-        { commentsListNav(head) }
+        { commentsListPagination(head) }
         <div>{ commentsList }</div>
-        { commentsListNav(tail) }
+        { commentsListPagination(tail) }
       </div>
-    );
-  }
-}
-
-class PaperNavJump extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.handle = props.handle;
-
-    this.state = { pageNumber: '' };
-
-    this.changePage = this.changePage.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
-
-  changePage() {
-    this.handle(this.state.pageNumber);
-  }
-
-  handleChange(event) {
-    this.setState({
-      pageNumber: event.target.value,
-    });
-  }
-
-  handleSubmit(event) {
-    this.props.handle(this.state.pageNumber);
-    this.setState({ pageNumber: '' });
-    event.preventDefault();
-  }
-
-  render() {
-    return (
-      <from className={forDevice} onSubmit={this.handleSubmit}>
-        <ButtonsGroup>
-          <input type="text" name="page" className={input}
-            onChange={this.handleChange}
-            value={this.state.pageNumber}
-            placeholder="Page"
-          />
-          <Button dark clickFunction={this.changePage}>
-            <To /><span>Jump</span>
-          </Button>
-        </ButtonsGroup>
-      </from>
-    );
-  }
-}
-
-export class PaperNav extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      pageNumber: '',
-    };
-  }
-
-  render() {
-    let result = [];
-    const handle = this.props.handle;
-    const current = this.props.current;
-    const length = this.props.length;
-
-    function mkHandle(paperNum) {
-      return () => handle(paperNum);
-    }
-
-    // The button that will jump to `paperNum` paper by `handle` function
-    function PaperNavButton(props) {
-      const forPhone = props.forPhone;
-      const forDevice = props.forDevice;
-
-      return (
-        <Button dark forPhone={forPhone} forDevice={forDevice}
-          clickFunction={mkHandle(props.paperNum)}
-        >
-          {props.paperNum}
-        </Button>
-      );
-    }
-
-    // Display the buttons before `current` button
-    if (this.props.current - 2 > 2) {
-      result.push(
-        <PaperNavButton paperNum={1} forDevice />,
-        <Dots className={forDevice} />,
-        <PaperNavButton paperNum={current - 2} forDevice />,
-        <PaperNavButton paperNum={current - 1} forDevice />,
-      );
-    } else {
-      for (let i = 1; i < current; i ++)
-        result.push(<PaperNavButton paperNum={i} forDevice />);
-    }
-    if (current > 2) {
-      result.push(
-        <Button dark forPhone clickFunction={mkHandle(1)}>
-          <Head />
-        </Button>
-      );
-    }
-    if (current > 1) {
-      result.push(
-        <Button dark forPhone clickFunction={mkHandle(current - 1)}>
-          <Before />
-        </Button>
-      );
-    }
-
-    // Display the `current` button
-    result.push(
-      <span className={currentClass}>{current}</span>,
-      <Info forPhone>/ {length}</Info>,
-    );
-
-    // Display the buttons after `current` button
-    if (this.props.current + 2 < this.props.length - 1) {
-      result.push(
-        <PaperNavButton paperNum={current + 1} forDevice />,
-        <PaperNavButton paperNum={current + 2} forDevice />,
-        <Dots className={forDevice} />,
-        <PaperNavButton paperNum={length} forDevice />,
-      );
-    } else {
-      for (let i = this.props.current + 1; i <= this.props.length; i ++)
-        result.push(<PaperNavButton paperNum={i} forDevice />);
-    }
-    if (current < length) {
-      result.push(
-        <Button dark forPhone clickFunction={mkHandle(current + 1)}>
-          <After />
-        </Button>
-      );
-    }
-    if (current < length - 1) {
-      result.push(
-        <Button dark forPhone clickFunction={mkHandle(length)}>
-          <Tail />
-        </Button>
-      );
-    }
-
-    // Display the blank between buttons and `Jump` component
-    result.push(<Placeholder />);
-
-    // Display the `Jump` component
-    result.push(<PaperNavJump handle={handle}/>);
-
-    // Render the buttons
-    return (
-      <ButtonsGroup className={this.props.className}>
-        <Pages />
-        {result.length ? result : null}
-      </ButtonsGroup>
     );
   }
 }
@@ -296,16 +142,23 @@ export class Comment extends React.Component {
 
   // Post a request to server and update the state.
   refresh(page) {
+    page = parseInt(page)
+    if(page < 1) page = 1;
     axios.get(`/api/v1/home/comments?page=${page}`)
       .then(response => {
         console.log(response);
+        let length = parseInt(response.data.length)
+        if(page > length) {
+          this.refresh(length);
+          return;
+        }
         this.setState({
           comments: {
             list: JSON.parse(response.data.result),
             current: page,
-            length: JSON.parse(response.data.length),
+            length,
           }
-       });
+        });
       })
       .catch(error => {
         console.error(error);
