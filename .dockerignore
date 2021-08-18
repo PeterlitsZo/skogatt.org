@@ -1,0 +1,4 @@
+**/*
+!env_setting/*
+!pages/build/**/*
+!server/target/release/peterlits-com-server

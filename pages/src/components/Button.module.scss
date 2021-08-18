@@ -1,0 +1,43 @@
+@import "../variables";
+
+// Button: just button ^_^
+%buttonBasic {
+    display: inline-flex;
+    align-items: center;
+
+    padding: $button-padding;
+
+    font-size: $help-font-height;
+    color: $text-second-color;
+
+    cursor: pointer;
+    user-select: none;
+
+    svg {
+        height: $help-font-height;
+    }
+}
+
+.button {
+    @extend %buttonBasic;
+
+    border: solid 1px $dark-background-color;
+    background: $background-color;
+
+    &:hover {
+        background-color: $dark-background-color;
+        color: $text-first-color;
+    }
+}
+
+.darkButton {
+    @extend %buttonBasic;
+
+    border: solid 1px $light-background-color;
+    background: $dark-background-color;
+
+    &:hover {
+        background-color: $light-background-color;
+        color: $text-first-color;
+    }
+}
