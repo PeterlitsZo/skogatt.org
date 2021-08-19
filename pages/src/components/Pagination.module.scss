@@ -8,6 +8,7 @@
     position: relative;
     box-sizing: border-box;
     width: 64px; // TODO(update: todo what?)
+    height: 2 * $button-padding + $text-font-height;
     padding: $button-padding;
     margin: 0;
     color: $text-first-color;
