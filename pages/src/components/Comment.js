@@ -17,7 +17,19 @@ import {Button} from './Button';
 import {Pagination, PaginationJump} from './Pagination';
 
 import {forDevice} from './ButtonsGroup.module.scss';
-import {item, text, list, head, tail, current as currentClass, input, comment, tag} from './Comment.module.scss';
+import {
+    item,
+    text,
+    list,
+    head,
+    headpic,
+    tail,
+    current as currentClass,
+    input,
+    comment,
+    tag,
+    main
+} from './Comment.module.scss';
 
 // The head of comments. It is a `Tag` in `ButtonsGroup`.
 export class CommentHead extends React.Component {
@@ -35,14 +47,14 @@ export class CommentHead extends React.Component {
 class CommentsItem extends React.Component {
   constructor(props) {
     super(props);
-    const fold = this.props.content.content.length > 250;
 
     // `fold`: boolean type:
     //  - true: this `CommentsItem` is folded (with a button to `unfold`).
     //  - false: unfolded (with a button to `fold`).
-    this.state = { fold };
+    this.state = { fold: true };
 
     this.changeFoldState = this.changeFoldState.bind(this);
+    this.fold_button = this.fold_button.bind(this);
   }
 
   changeFoldState() {
@@ -51,42 +63,50 @@ class CommentsItem extends React.Component {
     });
   }
 
-  render() {
-    /* type: {ip: string, datetime: string, content: string} */
-    const content = this.props.content;
-    const needFold = content.content.length > 250;
-
-    let fold_button = null;
-    let contentText = content.content;
+  fold_button(content) {
+    let fold_button = null, text = content;
 
     // If need fold content, then fold content and and `Fold/Unfold` button.
-    if (needFold) {
+    if (content.length > 250) {
       fold_button = (
         <Button dark clickFunction={ this.changeFoldState }>
           { this.state.fold ? 'Unfold' : 'Fold' }
         </Button>
       );
-      if (this.state.fold)
-        contentText = contentText.substring(0, 250) + '...';
+      if (this.state.fold) {
+        text = text.substring(0, 250) + '...';
+      }
     }
-
+    
     // split text with newline token(`\n`), and then render those to `<p>`
     // elements.
-    contentText = contentText.split('\n').map((i, key) => {
+    text = text.split('\n').map((i, key) => {
       return <p key={key}>{i}</p>
     });
 
+    return {fold_button, contentText: text};
+  }
+
+  render() {
+    /* props.content' type: {ip: string, datetime: string, content: string} */
+    const content = this.props.content;
+
+    let {fold_button, contentText} = this.fold_button(content.content);
+
     return (
       <div className={item}>
-        <ButtonsGroup>
-          <Info>{ content.ip }</Info>
-          <Info> - </Info>
-          <Info>{ moment(content.datetime).fromNow() }</Info>
-          <Placeholder />
-          { fold_button }
-        </ButtonsGroup>
-        <div className={text}>{ contentText }</div>
-        <ButtonsGroup>{ fold_button }</ButtonsGroup>
+        <div className={headpic}></div>
+        <div className={main}>
+          <ButtonsGroup>
+            <Info>{ content.ip }</Info>
+            <Info> - </Info>
+            <Info>{ moment(content.datetime).fromNow() }</Info>
+            <Placeholder />
+            { fold_button }
+          </ButtonsGroup>
+          <div className={text}>{ contentText }</div>
+          <ButtonsGroup>{ fold_button }</ButtonsGroup>
+        </div>
       </div>
     );
   }
@@ -178,7 +198,10 @@ export class Comment extends React.Component {
   render() {
     return (
       <div className={comment}>
-        <Textbox submit={this.submit} refresh={() => this.refresh(1)} />
+        <div className={item}>
+          <div className={headpic}></div>
+          <Textbox submit={this.submit} refresh={() => this.refresh(1)} />
+        </div>
         <CommentsList
           handle={this.refresh}
           comments={this.state.comments}

@@ -8,7 +8,7 @@ import {ReactComponent as Loading3s} from '../svg/loading-3s.svg';
 import {Button} from './Button';
 import {ButtonsGroup, Info, Placeholder} from './ButtonsGroup';
 
-import {textbox, buttonsGroup} from './Textbox.module.scss';
+import {textbox, main, headpic, buttonsGroup} from './Textbox.module.scss';
 
 export class Textbox extends React.Component {
   constructor(props) {
@@ -105,13 +105,16 @@ export class Textbox extends React.Component {
     );
 
     return (
-      <div className={textbox}>
-        {textarea}
-        <ButtonsGroup className={buttonsGroup}>
-          <Placeholder />
-          {warning}
-          {submitButton}
-        </ButtonsGroup>
+      <div class={textbox}>
+        <div className={headpic}></div>
+        <div className={main}>
+          {textarea}
+          <ButtonsGroup className={buttonsGroup}>
+            <Placeholder />
+            {warning}
+            {submitButton}
+          </ButtonsGroup>
+        </div>
       </div>
     );
   }
