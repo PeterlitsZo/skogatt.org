@@ -47,15 +47,15 @@
     }
 }
 
-.current {
-    color: $important-color;
-    font-weight: bold;
-}
-
 .comment {
     display: flex;
     flex-direction: column;
     margin: $button-padding 0 0 0;
     background: $dark-background-color;
     padding: $button-padding;
+    border-radius: $comment-radius 0 $comment-radius $comment-radius;
+}
+
+.tag {
+    border-radius: $button-radius $button-radius 0 0;
 }

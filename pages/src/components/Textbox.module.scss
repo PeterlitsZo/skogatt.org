@@ -5,7 +5,7 @@
     box-sizing: border-box;
 
     > * {
-        margin: 0 0 $button-padding 0;
+        margin: 0;
 
         &:last-child {
             margin: 0;
@@ -21,7 +21,8 @@
         width: 100%;
         padding: $button-padding;
         border: none;
-        border-radius: 0px;
+        border-bottom: solid 1px $dark-background-color;
+        border-radius: $button-radius $button-radius 0 0;
         background: $light-background-color;
 
         font-size: $text-font-height;
@@ -33,6 +34,12 @@
         &:focus {
             box-shadow: 0 0 0 $shadow-length $shadow-color;
         }
+    }
+
+    .buttonsGroup {
+        padding: $button-radius / 2;
+        border-radius: 0 0 $button-radius $button-radius;
+        background: $background-color;
     }
 }
 

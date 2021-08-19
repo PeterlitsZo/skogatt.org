@@ -29,6 +29,10 @@ export class Tag extends React.Component {
   render() {
     let withLine = this.props.withLine;
     let children = this.props.children;
+    let className = tag;
+    if (this.props.className) {
+      className += ' ' +  this.props.className;
+    }
 
     let line = null;
     if (withLine) {
@@ -36,7 +40,7 @@ export class Tag extends React.Component {
     }
 
     return (
-      <span className={tag}>
+      <span className={className}>
         {children}
         {line}
       </span>

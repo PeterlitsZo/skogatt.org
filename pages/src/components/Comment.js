@@ -17,13 +17,13 @@ import {Button} from './Button';
 import {Pagination, PaginationJump} from './Pagination';
 
 import {forDevice} from './ButtonsGroup.module.scss';
-import {item, text, list, head, tail, current as currentClass, input, comment} from './Comment.module.scss';
+import {item, text, list, head, tail, current as currentClass, input, comment, tag} from './Comment.module.scss';
 
 // The head of comments. It is a `Tag` in `ButtonsGroup`.
 export class CommentHead extends React.Component {
   render() {
     return (
-      <Tag withLine>
+      <Tag withLine className={tag}>
         <CommentIcon />
         <span>Comments</span>
       </Tag>
@@ -94,8 +94,6 @@ class CommentsItem extends React.Component {
 
 class CommentsList extends React.Component {
   render() {
-    console.log(this.props.comments);
-
     // main part - comments
     const commentsList = this.props.comments.list
       .map((data) => {
