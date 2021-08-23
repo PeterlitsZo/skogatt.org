@@ -33,7 +33,7 @@
             flex-shrink: 0;
             width: $head-length;
             height: $head-length;
-            background: $master-color;
+            background: $dark-master-color;
             border-radius: $button-radius;
             margin: 0 $button-padding 0 0;
         }
@@ -42,7 +42,7 @@
             width: calc(100% - #{$head-length + $button-padding});
 
             .text {
-                overflow: scroll;
+                overflow: auto;
 
                 font-size: $text-font-height;
         
@@ -51,9 +51,7 @@
                 p {
                     margin: 0 0 $button-padding/2 0;
         
-                    &:last-child {
-                        margin: 0;
-                    }
+                    &:last-child { margin: 0; }
                 }
             }
         }

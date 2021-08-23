@@ -13,8 +13,11 @@ import {
 import {LikeButton, DislikeButton} from './Button';
 import {CommentHead, Comment} from './Comment';
 import {ButtonsGroup, Placeholder} from './ButtonsGroup';
+import {Nav} from './Nav';
 
 function App() {
+  let nav = <Nav />;
+
   let header = (
     <header className={_header}>
       <div className={logo}>
@@ -45,14 +48,15 @@ function App() {
 
   let comment = <Comment />;
 
-  return (
+  return [
+    nav,
     <div className={app}>
       {header}
       {content}
       {buttons}
       {comment}
     </div>
-  );
+  ];
 }
 
 export default App;

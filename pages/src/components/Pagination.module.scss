@@ -1,4 +1,5 @@
 @import "../variables";
+@import "../util";
 
 .from {
     display: inline-flex;
@@ -18,11 +19,7 @@
     border-radius: 4px 0px 0px 4px;
     outline: none;
 
-    &:focus {
-        z-index: 1;
-        box-shadow: 0 0 0 $shadow-length $shadow-color;
-        outline: solid 1px $important-color;
-    }
+    @extend %focus;
 }
 
 .paginationButton  {

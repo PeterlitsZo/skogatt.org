@@ -1,4 +1,5 @@
 @import "../variables";
+@import "../util";
 
 .textbox {
     display: flex;
@@ -8,7 +9,7 @@
         flex-shrink: 0;
         width: $head-length;
         height: $head-length;
-        background: $master-color;
+        background: $dark-master-color;
         border-radius: $button-radius;
         margin: 0 $button-padding 0 0;
     }
@@ -33,9 +34,10 @@
             height: 100px;
             width: 100%;
             padding: $button-padding;
-            border: none;
+            border: solid 1px $light-background-color;
             border-bottom: solid 1px $dark-background-color;
             border-radius: $button-radius $button-radius 0 0;
+            vertical-align: top;
             background: $light-background-color;
     
             font-size: $text-font-height;
@@ -43,12 +45,8 @@
             color: $text-first-color;
             resize: none;
             outline: none;
-        
-            &:focus {
-                z-index: 1;
-                box-shadow: 0 0 0 $shadow-length $shadow-color;
-                outline: solid 1px $important-color;
-            }
+       
+            @extend %focus;
         }
     
         .buttonsGroup {
