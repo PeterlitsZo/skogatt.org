@@ -9,7 +9,7 @@
     position: relative;
     box-sizing: border-box;
     width: 64px; // TODO(update: todo what?)
-    height: 2 * $button-padding + $text-font-height;
+    height: $button-height;
     padding: $button-padding;
     margin: 0;
     color: $text-first-color;
@@ -24,8 +24,7 @@
 
 .paginationButton  {
     display: inline-block;
-    min-width: calc(#{2 * $button-padding} + #{$text-font-height});
-    height: calc(#{2 * $button-padding} + #{$text-font-height});
+    min-width: $button-height;
 
     &.current {
         color: $important-color;
@@ -40,5 +39,6 @@
     &.jump {
         border-radius: 0px 4px 4px 0px;
         background: $light-background-color;
+        border: solid 1px $light-background-color;
     }
 }

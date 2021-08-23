@@ -44,8 +44,8 @@
             position: absolute;
             left: 0;
             right: 0;
-            bottom: -$button-padding;
-            height: $button-padding;
+            bottom: -$normal-padding;
+            height: $normal-padding;
             background: $dark-background-color;
 
             @mixin solidLine() {

@@ -4,12 +4,12 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    padding: 2*$button-padding 0 0 0;
+    padding: 2*$normal-padding 0 0 0;
 
     &::before {
         content: "";
         position: absolute;
-        top: $button-padding;
+        top: $normal-padding;
         left: 0;
         right: 0;
         height: $line-height;
@@ -35,7 +35,7 @@
             height: $head-length;
             background: $dark-master-color;
             border-radius: $button-radius;
-            margin: 0 $button-padding 0 0;
+            margin: 0 $normal-padding 0 0;
         }
 
         .main {
@@ -61,9 +61,9 @@
 .comment {
     display: flex;
     flex-direction: column;
-    margin: $button-padding 0 0 0;
+    margin: $normal-padding 0 0 0;
     background: $dark-background-color;
-    padding: $button-padding;
+    padding: $normal-padding;
     border-radius: $comment-radius 0 $comment-radius $comment-radius;
 }
 
