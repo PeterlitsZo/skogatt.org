@@ -8,7 +8,7 @@ import {ReactComponent as Loading3s} from '../svg/loading-3s.svg';
 import {Button} from './Button';
 import {ButtonsGroup, Info, Placeholder} from './ButtonsGroup';
 
-import {textbox} from './Textbox.module.scss';
+import {textbox, main, headpic, buttonsGroup} from './Textbox.module.scss';
 
 export class Textbox extends React.Component {
   constructor(props) {
@@ -69,13 +69,6 @@ export class Textbox extends React.Component {
   }
 
   render() {
-    // Title of the textarea.
-    let title = (
-      <ButtonsGroup onClick={this.focusTextArea}>
-        <Info><Text />Text for submit:</Info>
-      </ButtonsGroup>
-    );
-
     // Main part of textarea.
     let textarea = (
       <textarea
@@ -83,6 +76,7 @@ export class Textbox extends React.Component {
         className="textarea"
         value={this.state.text}
         onChange={this.handleChange}
+        placeholder="comment here..."
       />
     );
 
@@ -98,27 +92,29 @@ export class Textbox extends React.Component {
 
     // Submit button
     let submitButtonIcon;
-    if (this.state.state == 'OK') {
+    if (this.state.state === 'OK') {
       submitButtonIcon = <Submit />;
     } else {
       submitButtonIcon = <Loading />;
     }
     let submitButton = (
-      <Button dark clickFunction={this.handleSubmit}>
+      <Button noBorder clickFunction={this.handleSubmit}>
         {submitButtonIcon}
         <span className="text">Submit</span>
       </Button>
     );
 
     return (
-      <div className={textbox}>
-        {title}
-        {textarea}
-        <ButtonsGroup>
-          <Placeholder />
-          {warning}
-          {submitButton}
-        </ButtonsGroup>
+      <div class={textbox}>
+        <div className={headpic}></div>
+        <div className={main}>
+          {textarea}
+          <ButtonsGroup className={buttonsGroup}>
+            <Placeholder />
+            {warning}
+            {submitButton}
+          </ButtonsGroup>
+        </div>
       </div>
     );
   }

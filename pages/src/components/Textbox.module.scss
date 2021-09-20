@@ -1,38 +1,58 @@
 @import "../variables";
+@import "../util";
 
 .textbox {
-    width: 100%;
-    box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
 
-    > * {
-        margin: 0 0 $button-padding 0;
-
-        &:last-child {
-            margin: 0;
-        }
+    .headpic {
+        flex-shrink: 0;
+        width: $head-length;
+        height: $head-length;
+        background: $dark-master-color;
+        border-radius: $button-radius;
+        margin: 0 $normal-padding 0 0;
     }
-
-    textarea {
-        position: relative;
-        box-sizing: border-box;
-        z-index: 1;
-
-        height: 100px;
-        width: 100%;
-        padding: $button-padding;
-        border: none;
-        border-radius: 0px;
-        background: $light-background-color;
-
-        font-size: $text-font-height;
-
-        color: $text-first-color;
-        resize: none;
-        outline: none;
     
-        &:focus {
-            box-shadow: 0 0 0 $shadow-length $shadow-color;
+    .main {
+        width: 100%;
+        box-sizing: border-box;
+    
+        > * {
+            margin: 0;
+    
+            &:last-child {
+                margin: 0;
+            }
+        }
+    
+        textarea {
+            position: relative;
+            box-sizing: border-box;
+            z-index: 1;
+    
+            height: 100px;
+            width: 100%;
+            padding: $button-padding;
+            border: solid 1px $light-background-color;
+            border-bottom: solid 1px $dark-background-color;
+            border-radius: $button-radius $button-radius 0 0;
+            vertical-align: top;
+            background: $light-background-color;
+    
+            font-size: $text-font-height;
+    
+            color: $text-first-color;
+            resize: none;
+            outline: none;
+       
+            @extend %focus;
+        }
+    
+        .buttonsGroup {
+            padding: $button-radius / 2;
+            border-radius: 0 0 $button-radius $button-radius;
+            background: $background-color;
         }
     }
 }
-

@@ -1,21 +1,29 @@
 @import "../variables";
+@import "../util";
 
 // Button: just button ^_^
 %buttonBasic {
     display: inline-flex;
     align-items: center;
+    box-sizing: border-box;
 
     padding: $button-padding;
+    height: $button-height;
 
     font-size: $help-font-height;
     color: $text-second-color;
+    border-radius: $button-radius;
 
     cursor: pointer;
     user-select: none;
 
+    outline: none;
+
     svg {
         height: $help-font-height;
     }
+    
+    @extend %focus;
 }
 
 .button {
@@ -24,7 +32,11 @@
     border: solid 1px $dark-background-color;
     background: $background-color;
 
-    &:hover {
+    &.noBorder {
+        border: solid 1px $background-color;
+    }
+
+    &:not([disabled]):hover {
         background-color: $dark-background-color;
         color: $text-first-color;
     }
@@ -36,7 +48,11 @@
     border: solid 1px $light-background-color;
     background: $dark-background-color;
 
-    &:hover {
+    &.noBorder {
+        border: solid 1px $dark-background-color;
+    }
+
+    &:not([disabled]):hover {
         background-color: $light-background-color;
         color: $text-first-color;
     }

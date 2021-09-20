@@ -2,6 +2,8 @@ import React from 'react';
 
 import {buttonsGroup, placeholder, tag, tagline, info, forPhone, forDevice} from './ButtonsGroup.module.scss';
 
+// ButtonsGroup: the group of a lot of buttons(see `./Button.js`), text, and so
+// on.
 export class ButtonsGroup extends React.Component {
   render() {
     let children = this.props.children;
@@ -9,7 +11,6 @@ export class ButtonsGroup extends React.Component {
     if (this.props.className) {
       buttonsGroupClass += ' ' + this.props.className;
     }
-    console.log("className: ", buttonsGroupClass);
 
     return (
       <div className={buttonsGroupClass}>
@@ -19,16 +20,22 @@ export class ButtonsGroup extends React.Component {
   }
 }
 
+// Placeholder: a variable-length space.
 export class Placeholder extends React.Component {
   render() {
     return <span className={placeholder} />;
   }
 }
 
+// Tag: show tags for something below.
 export class Tag extends React.Component {
   render() {
     let withLine = this.props.withLine;
     let children = this.props.children;
+    let className = tag;
+    if (this.props.className) {
+      className += ' ' +  this.props.className;
+    }
 
     let line = null;
     if (withLine) {
@@ -36,7 +43,7 @@ export class Tag extends React.Component {
     }
 
     return (
-      <span className={tag}>
+      <span className={className}>
         {children}
         {line}
       </span>
@@ -44,6 +51,7 @@ export class Tag extends React.Component {
   }
 }
 
+// Info: show text.
 export class Info extends React.Component {
   render() {
     let children = this.props.children;

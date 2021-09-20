@@ -1,0 +1,14 @@
+@import "../variables";
+
+.nav {
+    padding: $normal-padding calc((100% - #{$phone-width * 0.7} - 30vw + #{2 * $page-padding}) / 2);
+
+    background: $dark-background-color;
+}
+
+@media screen and (max-width: $phone-width) {
+    .nav {
+        width: auto !important;
+        padding: $normal-padding $page-padding !important;
+    }
+}
